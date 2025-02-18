@@ -16,10 +16,9 @@ let
     "k" = "move_visual_line_up";
     "l" = "move_char_right";
     "\\" = "flip_selections";
-    "x" = "extend_line_below";
-    "S-x" = "extend_line_above";
-    "A-x" = "select_line_above";
-    "A-S-x" = "select_line_below";
+    "x" = "extend_line";
+    "S-x" = "select_line_above";
+    "A-x" = "select_line_below";
     "v" = "select_mode";
     "," = "keep_primary_selection";
     "<" = "unindent";

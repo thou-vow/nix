@@ -25,7 +25,7 @@
       libqalculate # Calculator
       nixd
       nixfmt-rfc-style
-      unimatrix # Simulate display from unimatrix
+      unimatrix # Simulate display from matrix
 
       ## Rust
       cargo

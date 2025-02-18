@@ -28,7 +28,6 @@
       hostname
       man
       nano
-      ncurses
       openssh
       procps
       psmisc
@@ -60,10 +59,11 @@
 
   terminal = {
     font =
-     let
+      let
         package = pkgs.nerd-fonts.victor-mono;
         path = "share/fonts/truetype/NerdFonts/VictorMono/VictorMonoNerdFontMono-Light.ttf";
-      in "${package}/${path}";
+      in
+      "${package}/${path}";
     colors = {
       background = "#191724";
       foreground = "#e0def4";
