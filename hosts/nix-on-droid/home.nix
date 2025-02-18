@@ -12,8 +12,8 @@
   mods = {
     fish.enable = true;
     helix.enable = true;
+    tmux.enable = true;
     yazi.enable = true;
-    zellij.enable = true;
   };
 
   home = {
