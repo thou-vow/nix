@@ -53,12 +53,17 @@
       experimental-features = nix-command flakes pipe-operators
       warn-dirty = false
     '';
-    # package = pkgs.nixVersions.latest;
+    package = pkgs.nixVersions.latest;
   };
 
   system.stateVersion = "24.05";
 
   terminal = {
+    font =
+     let
+        package = pkgs.nerd-fonts.victor-mono;
+        path = "share/fonts/truetype/NerdFonts/VictorMono/VictorMonoNerdFontMono-Light.ttf";
+      in "${package}/${path}";
     colors = {
       background = "#191724";
       foreground = "#e0def4";
