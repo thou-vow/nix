@@ -502,7 +502,7 @@ let
     "v" = "exit_select_mode";
   };
 
-  cleared_default_keys = import ../../utils/helix/cleared_default_keys.nix;
+  cleared_default_keys = import ../../assets/helix/cleared_default_keys.nix;
 in
 {
   config = lib.mkIf config.mods.helix.enable {

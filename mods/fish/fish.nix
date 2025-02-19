@@ -36,6 +36,7 @@
         enable = true;
         plugins = with pkgs.fishPlugins; [
           {
+            # Auto add pairs
             name = "autopair";
             src = autopair.src;
           }
