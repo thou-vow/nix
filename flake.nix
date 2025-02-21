@@ -31,7 +31,11 @@
   };
 
   outputs =
-    { nixpkgs, nix-on-droid, ... }@inputs:
+    {
+      nixpkgs,
+      nix-on-droid,
+      ...
+    }@inputs:
     {
       nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
         extraSpecialArgs = { inherit inputs; };

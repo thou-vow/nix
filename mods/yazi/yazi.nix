@@ -18,7 +18,7 @@
           show_hidden = true;
           sort_by = "natural";
           sort_translit = true;
-          mouse_events = [];
+          mouse_events = [ ];
         };
       };
     };

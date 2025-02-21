@@ -12,7 +12,7 @@
     ./languages.nix
   ];
 
-  options.mods.helix.enable = lib.mkEnableOption "enable helix module";
+  options.mods.helix.enable = lib.mkEnableOption "enable helix";
 
   config = lib.mkIf config.mods.helix.enable {
     programs.helix = {

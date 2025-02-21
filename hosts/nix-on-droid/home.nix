@@ -12,6 +12,8 @@
   mods = {
     fish.enable = true;
     helix.enable = true;
+    nix.enable = true;
+    rust.enable = true;
     tmux.enable = true;
     yazi.enable = true;
   };
@@ -23,23 +25,12 @@
       hostname # Show hostname
       jdk
       libqalculate # Calculator
-      nixd
-      nixfmt-rfc-style
       unimatrix # Simulate display from matrix
-
-      ## Rust
-      cargo
-      clippy
-      rust-analyzer
-      rustc
-      rustfmt
-      rustycli # Playground
     ];
     sessionVariables = {
       EDITOR = "hx";
       VISUAL = "hx";
       SHELL = "fish";
-      SUDO_EDITOR = "hx";
     };
     stateVersion = "24.05";
   };

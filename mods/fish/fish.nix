@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
@@ -13,6 +12,7 @@
 
     home.packages = with pkgs; [
       duf # Disk usage/free utility
+      pokeget-rs
       w3m # Web browser for CLI
       wiki-tui # Wikipedia
     ];
@@ -71,14 +71,16 @@
           gcm = "git commit -m";
           gp = "git push";
           h = lib.mkIf config.mods.helix.enable "hx";
+          helix = lib.mkIf config.mods.helix.enable "hx";
+          t = lib.mkIf config.mods.tmux.enable "tmux";
           wiki = "wiki-tui";
 
           ## Docs
-          ".home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";
-          ".nix.dev" = "w3m https://nix.dev/manual/nix/latest/";
-          ".nixos" = "w3m https://nixos.org/manual/nixos/unstable/";
-          ".nixpkgs" = "w3m https://nixos.org/manual/nixpkgs/unstable/";
-          ".nix-on-droid" = "w3m https://nix-community.github.io/nix-on-droid/nix-on-droid-options.html";
+          "w.home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";
+          "w.nix.dev" = "w3m https://nix.dev/manual/nix/latest/";
+          "w.nixos" = "w3m https://nixos.org/manual/nixos/unstable/";
+          "w.nixpkgs" = "w3m https://nixos.org/manual/nixpkgs/unstable/";
+          "w.nix-on-droid" = "w3m https://nix-community.github.io/nix-on-droid/nix-on-droid-options.html";
         };
 
         shellInit = ''
@@ -88,6 +90,9 @@
           # Set clock on prompt
           set -gx pure_show_system_time true
           set -gx pure_color_system_time green
+
+          # Summon pokémon
+          pokeget random --hide-name
         '';
       };
 
