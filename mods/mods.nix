@@ -2,9 +2,9 @@
 
 {
   imports = [
-    ./fish/fish.nix
+    ./fish.nix
     ./helix/helix.nix
-    ./rust/rust.nix
+    ./rust.nix
     ./tmux/tmux.nix
     ./yazi/yazi.nix
   ];

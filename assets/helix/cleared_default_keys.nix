@@ -278,12 +278,11 @@ let
 
   listToNoOpAttrs =
     list:
-    list
-    |> map (name: {
+    builtins.listToAttrs(map (name: {
       inherit name;
       value = "no_op";
-    })
-    |> builtins.listToAttrs;
+    }) list
+    );
 
   normal = listToNoOpAttrs normalMode // {
     "C-w" = listToNoOpAttrs windowMinorMode;

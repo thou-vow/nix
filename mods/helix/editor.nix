@@ -17,10 +17,6 @@
       popup-border = "all";
       scrolloff = 5;
       end-of-line-diagnostics = "hint";
-      shell = lib.mkIf config.mods.fish.enable [
-        "fish"
-        "-c"
-      ];
       inline-diagnostics = {
         cursor-line = "disable";
         other-lines = "disable";
