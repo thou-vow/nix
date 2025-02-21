@@ -1,10 +1,5 @@
-{
-  pkgs,
-  ...
-}:
-
-{
-  imports = [ ./../../mods/mods.nix ];
+{pkgs, ...}: {
+  imports = [./../../mods/mods.nix];
 
   mods = {
     fish.enable = true;
@@ -12,6 +7,7 @@
     nix.enable = true;
     rust.enable = true;
     tmux.enable = true;
+    typst.enable = true;
     yazi.enable = true;
   };
 

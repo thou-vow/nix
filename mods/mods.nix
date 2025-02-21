@@ -6,6 +6,7 @@
     ./helix/helix.nix
     ./rust.nix
     ./tmux/tmux.nix
+    ./typst.nix
     ./yazi/yazi.nix
   ];
 

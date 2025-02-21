@@ -3,13 +3,10 @@
   lib,
   pkgs,
   ...
-}:
-
-{
+}: {
   options.mods.fish.enable = lib.mkEnableOption "enable fish";
 
   config = lib.mkIf config.mods.fish.enable {
-
     home.packages = with pkgs; [
       duf # Disk usage/free utility
       pokeget-rs
@@ -25,7 +22,7 @@
       eza = {
         enable = true;
         enableFishIntegration = true;
-        extraOptions = [ "--icons" ];
+        extraOptions = ["--icons"];
       };
 
       # Better find
@@ -74,6 +71,7 @@
           helix = lib.mkIf config.mods.helix.enable "hx";
           t = lib.mkIf config.mods.tmux.enable "tmux";
           wiki = "wiki-tui";
+          yy = "nix-on-droid switch --flake ~/nix#default";
 
           ## Docs
           "w.home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";
@@ -103,8 +101,6 @@
         enable = true;
         enableFishIntegration = true;
       };
-
     };
-
   };
 }

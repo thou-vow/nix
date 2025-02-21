@@ -1,5 +1,6 @@
 {
   config,
+  inouts,
   lib,
   pkgs,
   ...
@@ -27,11 +28,10 @@
             {
               name = "nix";
               indent = commonIndent;
-              language-servers = ["nil"];
-              formatter = {
-                command = "${pkgs.alejandra}/bin/alejandra";
-                args = ["--quiet" "-"];
-              };
+              language-servers = [
+                "nil"
+                # "nixd"
+              ];
               auto-format = true;
             }
           ]
@@ -41,35 +41,48 @@
               indent = commonIndent;
               language-servers = ["rust-analyzer"];
             }
+          ] ++ lib.optionals config.mods.typst.enable [
+            {
+              name = "typst";
+              indent = commonIndent;
+              formatter.command = "${lib.getExe pkgs.typst-fmt}";
+            }
           ];
 
         language-server = {
           nil = lib.mkIf config.mods.nix.enable {
-            command = "${pkgs.nil}/bin/nil";
+            command = "${lib.getExe pkgs.nil}";
+            formatting.command = ["${lib.getExe pkgs.alejandra}" "--quiet" "-"];
+            nix = {
+              maxMemoryMB = 1024;
+              flake.autoEvalInputs = true;
+            };
           };
           # nixd = lib.mkIf config.mods.nix.enable {
-          #   command = "nixd";
-          #   args = [ "--inlay-hints=true" ];
-          #   # timeout = 60;
+          #   command = "${pkgs.nixd}/bin/nixd";
+          #   args = ["--inlay-hints=true"];
           #   config.nixd = {
-          #     nixpkgs.expr = "import <nixpkgs> { }";
-          #     options = {
-          #       home-manager.expr = "(builtins.getFlake ~/nix ).nixOnDroidConfigurations.default.options.home-manager.users.type.getSubOptions []";
-          #       nix-on-droid.expr = "(builtins.getFlake ~/nix )).nixOnDroidConfigurations.default.options";
+          #     nixpkgs.expr = "import (builtins.getFlake \"${config.home.homeDirectory}/nix\").inputs.nixpkgs {}";
+          #     formatting = {
+          #       command = ["${pkgs.alejandra}/bin/alejandra" "--quiet" "-"];
           #     };
-          #     formatting.command = "nixfmt";
+          #     options = {
+          #       "nix-on-droid.default".expr = "(builtins.getFlake \"${config.home.homeDirectory}/home/nix\").nixOnDroidConfigurations.default.options";
+          #       # "home-manager.default".expr = "(builtins.getFlake \"${config.home.homeDirectory}/nix\").nixOnDroidConfigurations.default.options.home-manager.users.type.getSubOptions []";
+          #     };
           #   };
           # };
-          # rust-analyzer = lib.mkIf config.mods.rust.enable {
-          #   config = {
-          #     lru.capacity = 128;
-          #     cachePriming.enable = false;
-          #     diagnostics.experimental.enable = true;
-          #     checkOnSave.command = "clippy";
-          #     cargo.allFeatures = true;
-          #     numThreads = 2;
-          #   };
-          # };
+          rust-analyzer = lib.mkIf config.mods.rust.enable {
+            command = "${lib.getExe pkgs.rust-analyzer}";
+            config = {
+              lru.capacity = 128;
+              cachePriming.enable = false;
+              diagnostics.experimental.enable = true;
+              checkOnSave.command = "clippy";
+              cargo.allFeatures = true;
+              numThreads = 2;
+            };
+          };
         };
       };
     };

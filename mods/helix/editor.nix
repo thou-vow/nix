@@ -1,6 +1,8 @@
-{ config, lib, ... }:
-
 {
+  config,
+  lib,
+  ...
+}: {
   config = lib.mkIf config.mods.helix.enable {
     programs.helix.settings.editor = {
       mouse = false;

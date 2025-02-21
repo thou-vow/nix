@@ -402,11 +402,11 @@ let
     else if builtins.isList something then
       map convertStringNormalToSelect something
     else if builtins.isAttrs something then
-      lib.zipListsWith (name: value: {
+      builtins.listToAttrs(lib.zipListsWith (name: value: {
         inherit name;
         value = convertAttrsNormalToSelect value;
       }) (builtins.attrNames something) (builtins.attrValues something)
-      |> builtins.listToAttrs
+      )
     else
       something;
 
