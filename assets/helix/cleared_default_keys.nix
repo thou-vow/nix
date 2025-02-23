@@ -276,29 +276,28 @@ let
     "ret"
   ];
 
-  listToNoOpAttrs = list:
-    builtins.listToAttrs (
-      map (name: {
-        inherit name;
-        value = "no_op";
-      })
-      list
-    );
+  listToNoOpAttrs =
+    list:
+    list
+    |> map (name: {
+      inherit name;
+      value = "no_op";
+    })
+    |> builtins.listToAttrs;
 
-  normal =
-    listToNoOpAttrs normalMode
-    // {
-      "C-w" = listToNoOpAttrs windowMinorMode;
-      "[" = listToNoOpAttrs impairMinorMode;
-      "g" = listToNoOpAttrs gotoMinorMode;
-      "]" = listToNoOpAttrs impairMinorMode;
-      "z" = listToNoOpAttrs viewMinorMode;
-      "S-z" = listToNoOpAttrs viewMinorMode;
-      "m" = listToNoOpAttrs matchMinorMode;
-      "space" = listToNoOpAttrs spaceMinorMode;
-    };
+  normal = listToNoOpAttrs normalMode // {
+    "C-w" = listToNoOpAttrs windowMinorMode;
+    "[" = listToNoOpAttrs impairMinorMode;
+    "g" = listToNoOpAttrs gotoMinorMode;
+    "]" = listToNoOpAttrs impairMinorMode;
+    "z" = listToNoOpAttrs viewMinorMode;
+    "S-z" = listToNoOpAttrs viewMinorMode;
+    "m" = listToNoOpAttrs matchMinorMode;
+    "space" = listToNoOpAttrs spaceMinorMode;
+  };
   insert = listToNoOpAttrs insertMode;
   select = normal;
-in {
+in
+{
   inherit normal insert select;
 }

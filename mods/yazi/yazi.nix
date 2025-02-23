@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
- {
+}: {
   options.mods.yazi.enable = lib.mkEnableOption "enable yazi";
 
   config = lib.mkIf config.mods.yazi.enable {

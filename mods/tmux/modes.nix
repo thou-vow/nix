@@ -3,7 +3,6 @@
   lib,
   ...
 }:
-
 {
   config = lib.mkIf config.mods.tmux.enable {
     programs.tmux.extraConfig = ''

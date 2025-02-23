@@ -1,5 +1,8 @@
-{ config, lib, ... }:
-
+{
+  config,
+  lib,
+  ...
+}:
 let
   normalMode = {
     "'" = "repeat_last_motion";
@@ -140,6 +143,8 @@ let
     "l" = "insert_at_line_end";
     "]" = "append_mode";
     "}" = "open_below";
+    "down" = "add_newline_below";
+    "up" = "add_newline_above";
   };
   pasteMinorMode = {
     "[" = "paste_before";
@@ -164,16 +169,10 @@ let
     "f" = "goto_prev_function";
     "g" = "goto_prev_change";
     "c" = "goto_prev_comment";
-    "space" = "add_newline_above";
   };
   prevImpairMinorModeExpansion = {
     "d" = "goto_first_diag";
     "g" = "goto_first_change";
-  };
-  jumpMinorMode = {
-    "w" = "save_selection";
-    "[" = "jump_backward";
-    "]" = "jump_forward";
   };
   selectionMinorMode = {
     "q" = "@s}<S-w>";
@@ -251,7 +250,6 @@ let
     "f" = "goto_next_function";
     "g" = "goto_next_change";
     "c" = "goto_next_comment";
-    "space" = "add_newline_below";
   };
   nextImpairMinorModeExpansion = {
     "d" = "goto_last_diag";
@@ -301,6 +299,11 @@ let
     "l" = "jump_view_right";
     "S-l" = "swap_view_right";
     "x" = "hsplit";
+  };
+  jumpMinorMode = {
+    "w" = "save_selection";
+    "[" = "jump_backward";
+    "]" = "jump_forward";
   };
   macroMinorMode = {
     "w" = "record_macro";
@@ -355,6 +358,11 @@ let
     "d" = ":toggle-option inline-diagnostics.cursor-line disable hint";
   };
 
+  # setRepeatableMinorModeCommands =
+  #   builtStepsString: set:
+  #   (builtins.attrNames set)
+  #   |> lib.zipListsWith (name: value: { inherit name value; }) (builtins.attrValues set);
+
   convertAttrsNormalToSelect =
     let
       convertStringNormalToSelect =
@@ -402,11 +410,12 @@ let
     else if builtins.isList something then
       map convertStringNormalToSelect something
     else if builtins.isAttrs something then
-      builtins.listToAttrs(lib.zipListsWith (name: value: {
+      (builtins.attrValues something)
+      |> lib.zipListsWith (name: value: {
         inherit name;
         value = convertAttrsNormalToSelect value;
-      }) (builtins.attrNames something) (builtins.attrValues something)
-      )
+      }) (builtins.attrNames something)
+      |> builtins.listToAttrs
     else
       something;
 
@@ -436,7 +445,6 @@ let
     "[" = prevImpairMinorMode // {
       "[" = prevImpairMinorModeExpansion;
     };
-    "a" = jumpMinorMode;
     "s" = selectionMinorMode // {
       "s" = selectionMinorModeExpansion;
     };
@@ -458,6 +466,7 @@ let
       "c" = cursorMinorModeExpansion;
     };
     "b" = windowMinorMode;
+    "n" = jumpMinorMode;
     "m" = macroMinorMode;
     "/" = searchMinorMode;
     "°" = caseMinorMode;

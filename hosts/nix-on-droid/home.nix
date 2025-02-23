@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  imports = [./../../mods/mods.nix];
+  imports = [../../mods/mods.nix];
 
   mods = {
     fish.enable = true;

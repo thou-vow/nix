@@ -19,7 +19,6 @@
       clock24 = true;
       escapeTime = 0;
       historyLimit = 500000;
-      terminal = "tmux-256color";
 
       extraConfig = ''
         set -g allow-passthrough on

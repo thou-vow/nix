@@ -2,7 +2,8 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.mods.helix.enable {
     programs.helix.settings.editor = {
       mouse = false;
@@ -55,6 +56,7 @@
       };
       lsp = {
         enable = true;
+        auto-signature-help = false;
         display-messages = true;
         display-inlay-hints = true;
       };
