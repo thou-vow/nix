@@ -16,7 +16,6 @@
         unbind -T root -a
 
         bind -T root Escape source "~/.config/tmux/root.conf"
-        bind -T root Space source "~/.config/tmux/root.conf"
         bind -T root Enter source "~/.config/tmux/root.conf"
 
         bind -T root q { kill-pane ; source "~/.config/tmux/root.conf" }

@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ./modes.nix
   ];
@@ -24,6 +25,7 @@
         set -g allow-passthrough on
         set -g focus-events off
         set -g set-clipboard on
+        set -g terminal-overrides ",xterm*:RGB"
 
         set -g status-position top
         set -g status-justify centre

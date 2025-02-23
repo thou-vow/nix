@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   options.mods.fish.enable = lib.mkEnableOption "enable fish";
 
   config = lib.mkIf config.mods.fish.enable {
@@ -22,7 +23,7 @@
       eza = {
         enable = true;
         enableFishIntegration = true;
-        extraOptions = ["--icons"];
+        extraOptions = [ "--icons" ];
       };
 
       # Better find
