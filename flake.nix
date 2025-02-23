@@ -28,9 +28,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-
-    # Zellij configurable status bar
-    zjstatus.url = "github:dj95/zjstatus";
   };
 
   outputs =

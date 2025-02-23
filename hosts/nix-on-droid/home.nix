@@ -1,15 +1,14 @@
-{ pkgs, ... }:
-{
-  imports = [ ../../mods/mods.nix ];
+{pkgs, ...}: {
+  imports = [../../mods/mods.nix];
 
   mods = {
     fish.enable = true;
     helix.enable = true;
     nix.enable = true;
     rust.enable = true;
+    tmux.enable = true;
     typst.enable = true;
     yazi.enable = true;
-    zellij.enable = true;
   };
 
   home = {
@@ -19,6 +18,7 @@
       hostname # Show hostname
       jdk
       libqalculate # Calculator
+      unimatrix # Simulate display from matrix
     ];
     sessionVariables = {
       EDITOR = "hx";
