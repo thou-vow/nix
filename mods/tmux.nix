@@ -51,7 +51,7 @@
 
           unbind -T prefix -a
           bind -T prefix Escape source "${rootTransiction}"
-          bind -T prefix '\' source "${persistentPrefixTransiction}"
+          bind -T prefix Space source "${persistentPrefixTransiction}"
           bind -T prefix q { kill-pane ; source "${rootTransiction}" }
           bind -T prefix y { split-window -h ; source "${rootTransiction}" }
           bind -T prefix Y { split-window -hb ; source "${rootTransiction}" }
@@ -70,7 +70,7 @@
           bind -T prefix Right { resize-pane -R 1 ; source "${rootTransiction}" }
 
           bind -T persistent-prefix Escape source "${rootTransiction}"
-          bind -T persistent-prefix '\' source "${prefixTransiction}"
+          bind -T persistent-prefix Space source "${prefixTransiction}"
           bind -r -T persistent-prefix q kill-pane
           bind -r -T persistent-prefix y split-window -h
           bind -r -T persistent-prefix Y split-window -hb

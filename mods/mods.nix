@@ -5,7 +5,7 @@
     ./fish.nix
     ./helix/helix.nix
     ./rust.nix
-    ./tmux/tmux.nix
+    ./tmux.nix
     ./typst.nix
     ./yazi/yazi.nix
   ];

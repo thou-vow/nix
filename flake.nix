@@ -36,15 +36,21 @@
       nix-on-droid,
       ...
     }@inputs:
+    let
+      pkgs = import nixpkgs {
+        system = builtins.currentSystem;
+
+        config.allowUnfree = true;
+      };
+      customPkgs = import ./customPkgs/customPkgs.nix {
+        inherit pkgs;
+      };
+    in
     {
       nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = { inherit customPkgs inputs; };
 
-        pkgs = import nixpkgs {
-          system = "aarch64-linux";
-
-          config.allowUnfree = true;
-        };
+        inherit pkgs;
 
         modules = [ ./hosts/nix-on-droid/nix-on-droid.nix ];
       };

@@ -1,9 +1,11 @@
 {
+  customPkgs,
   inputs,
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   android-integration = {
     am.enable = true;
     termux-open.enable = true;
@@ -43,7 +45,7 @@
   home-manager = {
     backupFileExtension = "hm-bak";
     config = ./home.nix;
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = { inherit inputs; };
     useGlobalPkgs = true;
     useUserPackages = true;
   };
@@ -52,17 +54,19 @@
     extraOptions = ''
       experimental-features = nix-command flakes pipe-operators
     '';
-    nixPath = ["nixpkgs=${inputs.nixpkgs}"];
+    nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
     package = pkgs.nixVersions.latest;
   };
 
   system.stateVersion = "24.05";
 
   terminal = {
-    font = let
-      package = pkgs.nerd-fonts.victor-mono;
-      path = "share/fonts/truetype/NerdFonts/VictorMono/VictorMonoNerdFontMono-Light.ttf";
-    in "${package}/${path}";
+    font =
+      let
+        package = customPkgs.victor-mono-modified;
+        path = "share/fonts/truetype/VictorMonoModified.ttf";
+      in
+      "${package}/${path}";
     colors = {
       background = "#191724";
       foreground = "#e0def4";
