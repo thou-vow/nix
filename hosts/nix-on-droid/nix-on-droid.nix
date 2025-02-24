@@ -1,5 +1,4 @@
 {
-  customPkgs,
   inputs,
   lib,
   pkgs,
@@ -17,7 +16,7 @@
   };
 
   environment = {
-    etcBackupExtension = ".bak";
+    etcBackupExtension = "nix-bak";
     packages = with pkgs; [
       diffutils
       findutils
@@ -43,7 +42,7 @@
   };
 
   home-manager = {
-    backupFileExtension = "hm-bak";
+    backupFileExtension = "hm-nix-bak";
     config = ./home.nix;
     extraSpecialArgs = { inherit inputs; };
     useGlobalPkgs = true;
@@ -63,8 +62,8 @@
   terminal = {
     font =
       let
-        package = customPkgs.victor-mono-modified;
-        path = "share/fonts/truetype/VictorMonoModified.ttf";
+        package = pkgs.nerd-fonts.victor-mono;
+        path = "share/fonts/truetype/NerdFonts/VictorMono/VictorMonoNerdFont-Regular.ttf";
       in
       "${package}/${path}";
     colors = {

@@ -1,9 +1,10 @@
-{ lib, pkgs, ... }:
+{ lib, ... }:
 
 {
   imports = [
     ./fish.nix
     ./helix/helix.nix
+    ./java.nix
     ./rust.nix
     ./tmux.nix
     ./typst.nix

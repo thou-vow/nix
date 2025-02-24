@@ -13,7 +13,10 @@ let
     "minus" = "decrement";
     "_" = "trim_selections";
     "+" = "increment";
-    "y" = "yank";
+    "y" = [
+      "select_register"
+      "yank"
+    ];
     "h" = "move_char_left";
     "j" = "move_visual_line_down";
     "k" = "move_visual_line_up";
@@ -266,6 +269,7 @@ let
   cursorMinorMode = {
     "(" = "rotate_selection_contents_backward";
     ")" = "rotate_selection_contents_forward";
+    "y" = "yank_joined";
     "{" = "select_all_siblings";
     "f" = "keep_selections";
     "d" = "remove_primary_selection";
@@ -325,6 +329,7 @@ let
   spaceMinorMode = {
     "'" = "last_picker";
     "tab" = "file_picker_in_current_buffer_directory";
+    "q" = ":quit";
     "e" = "jumplist_picker";
     "s" = "symbol_picker";
     "d" = "diagnostics_picker";
@@ -343,6 +348,7 @@ let
     "m" = "@:mv <C-r>%";
   };
   spaceMinorModeExpansion = {
+    "q" = ":quit!";
     "s" = "workspace_symbol_picker";
     "d" = "workspace_diagnostics_picker";
   };
@@ -363,47 +369,46 @@ let
   #   (builtins.attrNames set)
   #   |> lib.zipListsWith (name: value: { inherit name value; }) (builtins.attrValues set);
 
-  convertAttrsNormalToSelect =
+  convertStringNormalToSelect =
+    string:
     let
-      convertStringNormalToSelect =
-        string:
-        let
-          mapping = {
-            "move_char_left" = "extend_char_left";
-            "move_visual_line_down" = "extend_visual_line_down";
-            "move_visual_line_up" = "extend_visual_line_up";
-            "move_char_right" = "extend_char_right";
-            "move_line_down" = "extend_line_down";
-            "move_line_up" = "extend_line_up";
-            "move_prev_long_word_start" = "extend_prev_long_word_start";
-            "move_next_long_word_start" = "extend_next_long_word_start";
-            "move_prev_long_word_end" = "extend_prev_long_word_end";
-            "move_next_long_word_end" = "extend_next_long_word_end";
-            "move_prev_sub_word_start" = "extend_prev_sub_word_start";
-            "move_next_sub_word_start" = "extend_next_sub_word_start";
-            "move_prev_sub_word_end" = "extend_prev_sub_word_end";
-            "move_next_sub_word_end" = "extend_next_sub_word_end";
-            "move_prev_word_start" = "extend_prev_word_start";
-            "move_next_word_start" = "extend_next_word_start";
-            "move_prev_word_end" = "extend_prev_word_end";
-            "move_next_word_end" = "extend_next_word_end";
-            "move_parent_node_start" = "extend_parent_node_start";
-            "move_parent_node_end" = "extend_parent_node_end";
-            "goto_first_nonwhitespace" = "extend_to_first_nonwhitespace";
-            "goto_line_end" = "extend_to_line_end";
-            "find_next_char" = "extend_next_char";
-            "find_prev_char" = "extend_prev_char";
-            "find_till_char" = "extend_till_char";
-            "till_prev_char" = "extend_till_prev_char";
-            "goto_word" = "extend_to_word";
-            "goto_line_start" = "extend_to_line_start";
-            "goto_line_end_newline" = "extend_to_line_end_newline";
-            "search_next" = "extend_search_next";
-            "search_prev" = "extend_search_prev";
-          };
-        in
-        if builtins.hasAttr string mapping then builtins.getAttr string mapping else string;
+      mapping = {
+        "move_char_left" = "extend_char_left";
+        "move_visual_line_down" = "extend_visual_line_down";
+        "move_visual_line_up" = "extend_visual_line_up";
+        "move_char_right" = "extend_char_right";
+        "move_line_down" = "extend_line_down";
+        "move_line_up" = "extend_line_up";
+        "move_prev_long_word_start" = "extend_prev_long_word_start";
+        "move_next_long_word_start" = "extend_next_long_word_start";
+        "move_prev_long_word_end" = "extend_prev_long_word_end";
+        "move_next_long_word_end" = "extend_next_long_word_end";
+        "move_prev_sub_word_start" = "extend_prev_sub_word_start";
+        "move_next_sub_word_start" = "extend_next_sub_word_start";
+        "move_prev_sub_word_end" = "extend_prev_sub_word_end";
+        "move_next_sub_word_end" = "extend_next_sub_word_end";
+        "move_prev_word_start" = "extend_prev_word_start";
+        "move_next_word_start" = "extend_next_word_start";
+        "move_prev_word_end" = "extend_prev_word_end";
+        "move_next_word_end" = "extend_next_word_end";
+        "move_parent_node_start" = "extend_parent_node_start";
+        "move_parent_node_end" = "extend_parent_node_end";
+        "goto_first_nonwhitespace" = "extend_to_first_nonwhitespace";
+        "goto_line_end" = "extend_to_line_end";
+        "find_next_char" = "extend_next_char";
+        "find_prev_char" = "extend_prev_char";
+        "find_till_char" = "extend_till_char";
+        "till_prev_char" = "extend_till_prev_char";
+        "goto_word" = "extend_to_word";
+        "goto_line_start" = "extend_to_line_start";
+        "goto_line_end_newline" = "extend_to_line_end_newline";
+        "search_next" = "extend_search_next";
+        "search_prev" = "extend_search_prev";
+      };
     in
+    if builtins.hasAttr string mapping then builtins.getAttr string mapping else string;
+
+  convertAttrsNormalToSelect =
     something:
     if builtins.isString something then
       convertStringNormalToSelect something

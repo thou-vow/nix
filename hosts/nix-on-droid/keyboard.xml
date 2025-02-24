@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <keyboard name="Main" script="latin" bottom_row="false" locale_extra_keys="false">
+   <row>
+      <key shift="3.5" key0="q" key2="1" key4="!" />
+      <key key0="w" key1="£" key2="2" key3="\@" key4="\#" />
+      <key key0="e" key1="¢" key2="3" key3="$" key4="%" />
+      <key key0="r" key1="¬" key2="4" key3="&amp;" key4="*" />
+      <key key0="t" key2="5" />
+      <key key0="y" key1="accent_trema" key2="6" />
+      <key key0="u" key2="7" key3="(" key4=")" />
+      <key key0="i" key1="_" key2="8" key3="-" />
+      <key key0="o" key1="+" key2="9" key3="=" />
+      <key key0="p" key1="0" key3="§" />
+   </row>
+   <row>
+      <key shift="4.0" key0="a" key2="tab" key4="esc" />
+      <key key0="s" key1="&quot;" key3="'" key4="ordinal" />
+      <key key0="d" />
+      <key key0="f" />
+      <key key0="g" />
+      <key key0="h" />
+      <key key0="j" key1="`" key2="accent_grave" key3="´" key4="accent_aigu" />
+      <key key0="k" key1="accent_circonflexe" key2="^" key3="accent_tilde" key4="~" />
+      <key key0="l" key1="{" key2="}" key3="[" key4="]" />
+   </row>
+   <row>
+      <key shift="3.5" width="1.5" key0="shift" key2="capslock" />
+      <key key0="z" key1="|" key3="\\" />
+      <key key0="x" />
+      <key key0="c" key1="accent_cedille" />
+      <key key0="v" />
+      <key key0="b" key4="°"/>
+      <key key0="n" key1="&lt;" key2="&gt;" key3="," key4="." />
+      <key key0="m" key1=":" key2="\?" key3=";" key4="/" />
+      <key width="1.5" key0="backspace" key7="delete" />
+   </row>
+   <row>
+      <key shift="3.5" width="1.5" key0="ctrl" key3="config" key4="fn" />
+      <key width="1.5" key0="alt" key3="switch_numeric" key4="switch_emoji" />
+      <key width="4.0" key0="space" key5="home" key6="end" key7="page_up" key8="page_down" />
+      <key width="1.5" key5="left" key6="right" key7="up" key8="down" />
+      <key width="1.5" key0="enter" key2="action" key3="switch_backward" key4="switch_forward" />
+   </row>
+   <modmap>
+      <fn a="q" b="f1" />
+      <fn a="1" b="f11" />
+      <fn a="!" b="accent_caron" />
+      <fn a="w" b="f2" />
+      <fn a="£" b="accent_slash" />
+      <fn a="2" b="accent_macron" />
+      <fn a="\@" b="accent_ring" />
+      <fn a="\#" b="accent_dot_above" />
+      <fn a="e" b="f3" />
+      <fn a="¢" b="accent_bar" />
+      <fn a="3" b="accent_ogonek" />
+      <fn a="$" b="accent_double_aigu" />
+      <fn a="%" b="accent_breve" />
+      <fn a="r" b="f4" />
+      <fn a="¬" b="accent_hook_above" />
+      <fn a="4" b="accent_arrow_right" />
+      <fn a="&amp;" b="accent_double_grave" />
+      <fn a="*" b="accent_horn" />
+      <fn a="t" b="f5" />
+      <fn a="5" b="" />
+      <fn a="y" b="f6" />
+      <fn a="accent_trema" b="accent_dot_below" />
+      <fn a="6" b="" />
+      <fn a="u" b="f7" />
+      <fn a="7" b="" />
+      <fn a="(" b="" />
+      <fn a=")" b="" />
+      <fn a="i" b="f8" />
+      <fn a="_" b="superscript" />
+      <fn a="8" b="" />
+      <fn a="-" b="subscript" />
+      <fn a="o" b="f9" />
+      <fn a="+" b="box" />
+      <fn a="9" b="" />
+      <fn a="=" b="arrows" />
+      <fn a="p" b="f10" />
+      <fn a="0" b="f12" />
+      <fn a="§" b="" />
+      <fn a="a" b="cut" />
+      <fn a="tab" b="\t" />
+      <fn a="esc" b="insert" />
+      <fn a="s" b="copy" />
+      <fn a="&quot;" b="" />
+      <fn a="'" b="" />
+      <fn a="ordinal" b="" />
+      <fn a="d" b="paste" />
+      <fn a="f" b="pasteAsPlainText" />
+      <fn a="g" b="shareText" />
+      <fn a="h" b=":keyevent symbol='⏯':85" />
+      <fn a="j" b="cursor_left" />
+      <fn a="`" b="" />
+      <fn a="accent_grave" b="" />
+      <fn a="´" b="" />
+      <fn a="accent_aigu" b="" />
+      <fn a="k" b="cursor_right" />
+      <fn a="accent_circonflexe" b="" />
+      <fn a="^" b="" />
+      <fn a="accent_tilde" b="" />
+      <fn a="~" b="" />
+      <fn a="l" b="selectAll" />
+      <fn a="{" b="" />
+      <fn a="}" b="" />
+      <fn a="[" b="" />
+      <fn a="]" b="" />
+      <fn a="shift" b="shift" />
+      <fn a="capslock" b="capslock" />
+      <fn a="z" b="undo" />
+      <fn a="|" b="" />
+      <fn a="\" b="" />
+      <fn a="x" b="redo" />
+      <fn a="c" b=":keyevent symbol='⏪':89" />
+      <fn a="accent_cedille" b="" />
+      <fn a="v" b=":keyevent symbol='⏩':90" />
+      <fn a="b" b=":keyevent symbol='🔉':25" />
+      <fn a="°" b="" />
+      <fn a="n" b=":keyevent symbol='🔊':24" />
+      <fn a="&lt;" b="" />
+      <fn a="&gt;" b="" />
+      <fn a="," b="" />
+      <fn a="." b="" />
+      <fn a="m" b=":keyevent symbol='🔇':164" />
+      <fn a=":" b="" />
+      <fn a="\?" b="" />
+      <fn a=";" b="" />
+      <fn a="/" b="" />
+      <fn a="backspace" b="backspace" />
+      <fn a="delete" b="delete" />
+      <fn a="ctrl" b="meta" />
+      <fn a="config" b="config" />
+      <fn a="fn" b="fn" />
+      <fn a="alt" b="scroll_lock" />
+      <fn a="switch_numeric" b="menu" />
+      <fn a="switch_emoji" b="switch_clipboard" />
+      <fn a="space" b="nbsp" />
+      <fn a="home" b="" />
+      <fn a="end" b="" />
+      <fn a="page_up" b="" />
+      <fn a="page_down" b="" />
+      <fn a="left" b="" />
+      <fn a="right" b="" />
+      <fn a="up" b="" />
+      <fn a="down" b="" />
+      <fn a="enter" b="\n" />
+      <fn a="action" b="" />
+      <fn a="switch_backward" b="switch_backward" />
+      <fn a="switch_forward" b="switch_forward" />
+   </modmap>
+</keyboard>
+

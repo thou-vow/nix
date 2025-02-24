@@ -24,7 +24,7 @@
           tmuxAssetsDirectory = "${config.home.homeDirectory}/nix/assets/tmux";
           rootTransiction = "${tmuxAssetsDirectory}/modeTransictions/root.conf";
           prefixTransiction = "${tmuxAssetsDirectory}/modeTransictions/prefix.conf";
-          persistentPrefixTransiction = "${tmuxAssetsDirectory}/modeTransictions/persistent-prsfix.conf";
+          persistentPrefixTransiction = "${tmuxAssetsDirectory}/modeTransictions/persistent-prefix.conf";
         in
         ''
           set -g allow-passthrough on
@@ -87,6 +87,8 @@
           bind -r -T persistent-prefix Down resize-pane -D 1
           bind -r -T persistent-prefix Up resize-pane -U 1
           bind -r -T persistent-prefix Right resize-pane -R 1
+
+          source "${tmuxAssetsDirectory}/startup.conf"
         '';
     };
   };
