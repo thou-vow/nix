@@ -42,13 +42,13 @@
 
         config.allowUnfree = true;
       };
-      customPkgs = import ./customPkgs/customPkgs.nix {
+      custom-pkgs = import ./custom-pkgs/custom-pkgs.nix {
         inherit pkgs;
       };
     in
     {
       nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
-        extraSpecialArgs = { inherit customPkgs inputs; };
+        extraSpecialArgs = { inherit custom-pkgs inputs; };
 
         inherit pkgs;
 

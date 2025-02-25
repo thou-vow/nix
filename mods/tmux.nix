@@ -22,9 +22,9 @@
       extraConfig =
         let
           tmuxAssetsDirectory = "${config.home.homeDirectory}/nix/assets/tmux";
-          rootTransiction = "${tmuxAssetsDirectory}/modeTransictions/root.conf";
-          prefixTransiction = "${tmuxAssetsDirectory}/modeTransictions/prefix.conf";
-          persistentPrefixTransiction = "${tmuxAssetsDirectory}/modeTransictions/persistent-prefix.conf";
+          rootTransiction = "${tmuxAssetsDirectory}/mode-transictions/root.conf";
+          prefixTransiction = "${tmuxAssetsDirectory}/mode-transictions/prefix.conf";
+          persistentPrefixTransiction = "${tmuxAssetsDirectory}/mode-transictions/persistent-prefix.conf";
         in
         ''
           set -g allow-passthrough on

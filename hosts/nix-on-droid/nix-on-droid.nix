@@ -36,6 +36,7 @@
       unzip
       vim
       wget
+      which
       zip
     ];
     motd = null;

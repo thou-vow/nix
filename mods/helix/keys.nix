@@ -13,10 +13,7 @@ let
     "minus" = "decrement";
     "_" = "trim_selections";
     "+" = "increment";
-    "y" = [
-      "select_register"
-      "yank"
-    ];
+    "y" = "yank";
     "h" = "move_char_left";
     "j" = "move_visual_line_down";
     "k" = "move_visual_line_up";
