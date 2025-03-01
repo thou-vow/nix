@@ -3,6 +3,7 @@
   imports = [ ../../mods/mods.nix ];
 
   mods = {
+    dash.enable = true;
     fish.enable = true;
     helix.enable = true;
     java.enable = true;
@@ -18,7 +19,6 @@
       fastfetch # Show system/device info
       gcc # C compiler
       hostname # Show hostname
-      kbd # For showkey -a command
       libqalculate # Calculator
       unimatrix # Simulate display from matrix
     ];

@@ -31,10 +31,7 @@
               name = "nix";
               indent = commonIndent;
               auto-format = true;
-              language-servers = [
-                # "nil"
-                "nixd"
-              ];
+              language-servers = [ "nixd" ];
             }
           ]
           ++ lib.optionals config.mods.rust.enable [
@@ -51,16 +48,31 @@
               formatter.command = "${lib.getExe pkgs.typst-fmt}";
               language-servers = [ "tinymist" ];
             }
+          ]
+          ++ lib.optionals config.mods.dash.enable [
+            {
+              name = "bash";
+              indent = commonIndent;
+              language-servers = [ "bash-language-server" ];
+            }
           ];
 
         language-server = {
-          # nil = lib.mkIf config.mods.nix.enable {
-          #   command = "${lib.getExe pkgs.nil}";
-          #   config.nil = {
-          #     formatting.command = ["${lib.getExe pkgs.alejandra}" "--quiet" "-"];
-          #     nix.flake.autoEvalInputs = true;
-          #   };
-          # };
+          bash-language-server = lib.mkIf config.mods.dash.enable {
+            command = "${lib.getExe pkgs.bash-language-server}";
+            args = [ "start" ];
+            config = {
+              enableSourceErrorDiagnostics = true;
+              shellcheckPath = "${lib.getExe pkgs.shellcheck}";
+              shfmt = {
+                path = "${lib.getExe pkgs.shfmt}";
+                binaryNextLine = true;
+                caseIndent = true;
+                simplifyCode = true;
+                spaceRedirects = true;
+              };
+            };
+          };
           nixd = lib.mkIf config.mods.nix.enable {
             command = "${lib.getExe pkgs.nixd}";
             args = [ "--inlay-hints=true" ];
@@ -69,7 +81,7 @@
               formatting = {
                 command = [ "${lib.getExe pkgs.nixfmt-rfc-style}" ];
               };
-              options."nix-on-droid.default".expr =
+              options."nix-on-droid".expr =
                 "(builtins.getFlake \"${inputs.self}\").nixOnDroidConfigurations.default.options";
             };
           };

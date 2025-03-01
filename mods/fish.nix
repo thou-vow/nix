@@ -53,26 +53,23 @@
           }
         ];
 
+        interactiveShellInit = ''
+          # Avoid pure plugin error
+          set --universal pure_enable_container_detection false
+
+          # Set clock on prompt
+          set -gx pure_show_system_time true
+          set -gx pure_color_system_time green
+
+          source "${config.home.homeDirectory}/nix/assets/fish/interactive_init.fish"
+        '';
+
         preferAbbrs = true;
         shellAbbrs = {
-          ".." = "cd ..";
-          "../.." = "cd ../..";
-          "../../.." = "cd ../../..";
-          cat = "bat";
-          cd = "z";
-          e = "exit";
-          find = "fd";
-          g = "git";
-          ga = "git add";
-          gaa = "git add --all";
-          gc = "git clone";
-          gcm = "git commit -m";
-          gp = "git push";
           h = lib.mkIf config.mods.helix.enable "hx";
           helix = lib.mkIf config.mods.helix.enable "hx";
           t = lib.mkIf config.mods.tmux.enable "tmux";
-          wiki = "wiki-tui";
-          yy = "nix-on-droid switch --flake ~/nix#default";
+          yy = "nix-on-droid switch --flake path:nix#default";
 
           ## Docs
           "w.home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";
@@ -81,18 +78,6 @@
           "w.nixpkgs" = "w3m https://nixos.org/manual/nixpkgs/unstable/";
           "w.nix-on-droid" = "w3m https://nix-community.github.io/nix-on-droid/nix-on-droid-options.html";
         };
-
-        shellInit = ''
-          # Avoid pure plugin error
-          set --universal pure_enable_container_detection false
-
-          # Set clock on prompt
-          set -gx pure_show_system_time true
-          set -gx pure_color_system_time green
-
-          # Summon pokémon
-          pokeget random --hide-name
-        '';
       };
 
       ripgrep.enable = true;

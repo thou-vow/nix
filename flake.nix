@@ -28,6 +28,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    # Secrets management
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs =
@@ -42,13 +45,16 @@
 
         config.allowUnfree = true;
       };
-      custom-pkgs = import ./custom-pkgs/custom-pkgs.nix {
-        inherit pkgs;
-      };
     in
+    # custom-pkgs = import ./custom-pkgs/custom-pkgs.nix {
+    #   inherit pkgs;
+    # };
     {
       nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
-        extraSpecialArgs = { inherit custom-pkgs inputs; };
+        extraSpecialArgs = {
+          # inherit custom-pkgs;
+          inherit inputs;
+        };
 
         inherit pkgs;
 

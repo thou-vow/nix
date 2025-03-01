@@ -19,9 +19,17 @@ let
     "k" = "move_visual_line_up";
     "l" = "move_char_right";
     "\\" = "flip_selections";
-    "x" = "extend_line";
-    "S-x" = "select_line_above";
-    "A-x" = "select_line_below";
+    "x" = "extend_line_below";
+    "S-x" = "extend_line_above";
+    "A-x" = [
+      "ensure_selections_forward"
+      "select_line_above"
+    ];
+    "A-S-x" = [
+      "ensure_selections_forward"
+      "flip_selections"
+      "select_line_below"
+    ];
     "v" = "select_mode";
     "," = "keep_primary_selection";
     "<" = "unindent";
@@ -73,31 +81,26 @@ let
   };
   longWordMinorMode = {
     "[" = "move_prev_long_word_start";
+    "{" = "move_prev_long_word_end";
     "]" = "move_next_long_word_end";
-  };
-  longWordMinorModeExpansion = {
-    "[" = "move_prev_long_word_end";
-    "]" = "move_next_long_word_start";
+    "}" = "move_next_long_word_start";
   };
   wordMinorMode = {
     "[" = "move_prev_word_start";
+    "{" = "move_prev_word_end";
     "]" = "move_next_word_end";
-  };
-  wordMinorModeExpansion = {
-    "[" = "move_prev_word_end";
-    "]" = "move_next_word_start";
+    "}" = "move_next_word_start";
   };
   subWordMinorMode = {
     "[" = "move_prev_sub_word_start";
+    "{" = "move_prev_sub_word_end";
     "]" = "move_next_sub_word_end";
-  };
-  subWordMinorModeExpansion = {
-    "[" = "move_prev_sub_word_end";
-    "]" = "move_next_sub_word_start";
+    "}" = "move_next_sub_word_start";
   };
   replaceMinorMode = {
     "q" = "@s}<S-w>r<ret>";
     "w" = "@s}wr<ret>";
+    "r" = "change_selection_noyank";
     "y" = "change_selection";
     "p" = "replace_with_yanked";
     "s" = "surround_replace";
@@ -117,23 +120,12 @@ let
       "change_selection_noyank"
     ];
     "c" = "replace";
-    "ret" = "change_selection_noyank";
-  };
-  treeMinorMode = {
-    "[" = "select_prev_sibling";
-    "]" = "select_next_sibling";
-    "{" = "expand_selection";
-    "}" = "shrink_selection";
-    "h" = "move_parent_node_start";
-    "l" = "move_parent_node_end";
   };
   undoMinorMode = {
     "[" = "undo";
+    "{" = "earlier";
     "]" = "redo";
-  };
-  undoMinorModeExpansion = {
-    "[" = "earlier";
-    "]" = "later";
+    "}" = "later";
   };
   insertMinorMode = {
     "[" = "insert_mode";
@@ -174,6 +166,14 @@ let
     "d" = "goto_first_diag";
     "g" = "goto_first_change";
   };
+  treeMinorMode = {
+    "[" = "select_prev_sibling";
+    "]" = "select_next_sibling";
+    "{" = "expand_selection";
+    "}" = "shrink_selection";
+    "h" = "move_parent_node_start";
+    "l" = "move_parent_node_end";
+  };
   selectionMinorMode = {
     "q" = "@s}<S-w>";
     "w" = "@s}w";
@@ -194,6 +194,7 @@ let
     "w" = "@s}wd<ret>";
     "y" = "delete_selection";
     "s" = "surround_delete";
+    "d" = "delete_selection_noyank";
     "h" = "kill_to_line_start";
     "l" = "kill_to_line_end";
     "x" = [
@@ -201,21 +202,14 @@ let
       "extend_to_line_bounds"
       "delete_selection_noyank"
     ];
-    "ret" = "delete_selection_noyank";
-    "backspace" = "delete_char_backward";
-    "del" = "delete_char_forward";
-  };
-  deleteMinorModeExpansion = {
     "backspace" = "delete_word_backward";
     "del" = "delete_word_forward";
   };
   findMinorMode = {
     "[" = "till_prev_char";
+    "{" = "find_prev_char";
     "]" = "find_till_char";
-  };
-  findMinorModeExpansion = {
-    "[" = "find_prev_char";
-    "]" = "find_next_char";
+    "}" = "find_next_char";
   };
   gotoMinorMode = {
     "w" = "goto_word";
@@ -308,7 +302,7 @@ let
   };
   macroMinorMode = {
     "w" = "record_macro";
-    "ret" = "replay_macro";
+    "m" = "replay_macro";
   };
   searchMinorMode = {
     "w" = "make_search_word_bounded";
@@ -327,6 +321,7 @@ let
     "'" = "last_picker";
     "tab" = "file_picker_in_current_buffer_directory";
     "q" = ":quit";
+    "w" = ":write-all";
     "e" = "jumplist_picker";
     "s" = "symbol_picker";
     "d" = "diagnostics_picker";
@@ -346,6 +341,7 @@ let
   };
   spaceMinorModeExpansion = {
     "q" = ":quit!";
+    "w" = ":write-all!";
     "s" = "workspace_symbol_picker";
     "d" = "workspace_diagnostics_picker";
   };
@@ -428,34 +424,22 @@ let
     "tab" = bufferMinorMode // {
       "tab" = bufferMinorModeExpansion;
     };
-    "q" = longWordMinorMode // {
-      "q" = longWordMinorModeExpansion;
-    };
-    "w" = wordMinorMode // {
-      "w" = wordMinorModeExpansion;
-    };
-    "e" = subWordMinorMode // {
-      "e" = subWordMinorModeExpansion;
-    };
+    "q" = longWordMinorMode;
+    "w" = wordMinorMode;
+    "e" = subWordMinorMode;
     "r" = replaceMinorMode;
-    "t" = treeMinorMode;
-    "u" = undoMinorMode // {
-      "u" = undoMinorModeExpansion;
-    };
+    "u" = undoMinorMode;
     "o" = insertMinorMode;
     "p" = pasteMinorMode;
     "[" = prevImpairMinorMode // {
       "[" = prevImpairMinorModeExpansion;
     };
+    "a" = treeMinorMode;
     "s" = selectionMinorMode // {
       "s" = selectionMinorModeExpansion;
     };
-    "d" = deleteMinorMode // {
-      "d" = deleteMinorModeExpansion;
-    };
-    "f" = findMinorMode // {
-      "f" = findMinorModeExpansion;
-    };
+    "d" = deleteMinorMode;
+    "f" = findMinorMode;
     "g" = gotoMinorMode // {
       "g" = gotoMinorModeExpansion;
     };

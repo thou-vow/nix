@@ -28,9 +28,11 @@
       gnutar
       gzip
       hostname
+      kbd # For showkey -a command
       man
       nano
       openssh
+      oscclip
       procps
       psmisc
       unzip
