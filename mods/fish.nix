@@ -69,7 +69,7 @@
           h = lib.mkIf config.mods.helix.enable "hx";
           helix = lib.mkIf config.mods.helix.enable "hx";
           t = lib.mkIf config.mods.tmux.enable "tmux";
-          yy = "nix-on-droid switch --flake path:nix#default";
+          yy = ''nix-on-droid switch --flake "path:$HOME/nix#default"'';
 
           ## Docs
           "w.home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";

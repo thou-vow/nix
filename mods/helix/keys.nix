@@ -48,7 +48,7 @@ let
     "up" = "scroll_up";
   };
   languageMinorMode = {
-    "s" = "rename_symbol";
+    "r" = "rename_symbol";
     "f" = "format_selections";
     "x" = "completion";
     "c" = "toggle_line_comments";
@@ -98,8 +98,8 @@ let
     "}" = "move_next_sub_word_start";
   };
   replaceMinorMode = {
-    "q" = "@s}<S-w>r<ret>";
-    "w" = "@s}wr<ret>";
+    "q" = "@s}<S-w>rr";
+    "w" = "@s}wrr";
     "r" = "change_selection_noyank";
     "y" = "change_selection";
     "p" = "replace_with_yanked";
@@ -190,8 +190,8 @@ let
     "down" = "join_selections_space";
   };
   deleteMinorMode = {
-    "q" = "@s}<S-w>d<ret>";
-    "w" = "@s}wd<ret>";
+    "q" = "@s}<S-w>dd";
+    "w" = "@s}wdd";
     "y" = "delete_selection";
     "s" = "surround_delete";
     "d" = "delete_selection_noyank";
@@ -348,19 +348,54 @@ let
   configMinorMode = {
     "i" = ":toggle-option lsp.display-inlay-hints";
     "s" = ":toggle-option auto-pairs";
-    "d" = ":toggle-option inline-diagnostics.other-lines disable hint";
+    "d" = [
+      ":toggle-option inline-diagnostics.other-lines disable hint"
+      ":toggle-option inline-diagnostics.cursor-line disable hint"
+    ];
     "x" = ":toggle-option soft-wrap.enable";
     "/" = ":toggle-option search.smart-case";
     "ret" = ":open ~/nix/";
   };
-  configMinorModeExpansion = {
-    "d" = ":toggle-option inline-diagnostics.cursor-line disable hint";
-  };
 
-  # setRepeatableMinorModeCommands =
-  #   builtStepsString: set:
-  #   (builtins.attrNames set)
-  #   |> lib.zipListsWith (name: value: { inherit name value; }) (builtins.attrValues set);
+  # Never pass ">" and similar keys to repeatableMinorModes
+  # Never pass keys that already have minor mode expansions
+  setRepeatableMinorModes =
+    repeatableMinorModes: keys:
+    keys
+    |> builtins.attrValues
+    |> lib.zipListsWith (name: value: {
+      inherit name value;
+    }) (builtins.attrNames keys)
+    |> map (
+      minorMode:
+      if
+        builtins.any (repeatableMinorMode: minorMode.name == repeatableMinorMode) repeatableMinorModes
+      then
+        {
+          name = minorMode.name;
+          value = minorMode.value // {
+            "${minorMode.name}" =
+              (
+                minorMode.value
+                |> builtins.attrNames
+                |> map (name: {
+                  inherit name;
+                  value = "@<${minorMode.name}><${name}><${minorMode.name}><${minorMode.name}>";
+                })
+                |> lib.listToAttrs
+              )
+              // {
+                "${minorMode.name}" = "@<${minorMode.name}>";
+              };
+          };
+        }
+      else
+        {
+          name = minorMode.name;
+          value = minorMode.value;
+        }
+    )
+    |> lib.listToAttrs;
 
   convertStringNormalToSelect =
     string:
@@ -402,68 +437,78 @@ let
     if builtins.hasAttr string mapping then builtins.getAttr string mapping else string;
 
   convertAttrsNormalToSelect =
-    something:
-    if builtins.isString something then
-      convertStringNormalToSelect something
-    else if builtins.isList something then
-      map convertStringNormalToSelect something
-    else if builtins.isAttrs something then
-      (builtins.attrValues something)
-      |> lib.zipListsWith (name: value: {
-        inherit name;
-        value = convertAttrsNormalToSelect value;
-      }) (builtins.attrNames something)
+    value:
+    if builtins.isString value then
+      convertStringNormalToSelect value
+    else if builtins.isList value then
+      map convertStringNormalToSelect value
+    else if builtins.isAttrs value then
+      (builtins.attrValues value)
+      |> lib.zipListsWith (attrName: attrValue: {
+        name = attrName;
+        value = convertAttrsNormalToSelect attrValue;
+      }) (builtins.attrNames value)
       |> builtins.listToAttrs
     else
-      something;
+      value;
 
-  normal = normalMode // {
-    "=" = languageMinorMode // {
-      "=" = languageMinorModeExpansion;
-    };
-    "tab" = bufferMinorMode // {
-      "tab" = bufferMinorModeExpansion;
-    };
-    "q" = longWordMinorMode;
-    "w" = wordMinorMode;
-    "e" = subWordMinorMode;
-    "r" = replaceMinorMode;
-    "u" = undoMinorMode;
-    "o" = insertMinorMode;
-    "p" = pasteMinorMode;
-    "[" = prevImpairMinorMode // {
-      "[" = prevImpairMinorModeExpansion;
-    };
-    "a" = treeMinorMode;
-    "s" = selectionMinorMode // {
-      "s" = selectionMinorModeExpansion;
-    };
-    "d" = deleteMinorMode;
-    "f" = findMinorMode;
-    "g" = gotoMinorMode // {
-      "g" = gotoMinorModeExpansion;
-    };
-    "ç" = insertMinorMode;
-    "]" = nextImpairMinorMode // {
-      "]" = nextImpairMinorModeExpansion;
-    };
-    "z" = viewMinorMode;
-    "c" = cursorMinorMode // {
-      "c" = cursorMinorModeExpansion;
-    };
-    "b" = windowMinorMode;
-    "n" = jumpMinorMode;
-    "m" = macroMinorMode;
-    "/" = searchMinorMode;
-    "°" = caseMinorMode;
-    "space" = spaceMinorMode // {
-      ":" = spaceMinorModeCommand;
-      "space" = spaceMinorModeExpansion;
-    };
-    "end" = configMinorMode // {
-      "end" = configMinorModeExpansion;
-    };
-  };
+  normal =
+    normalMode
+    // {
+      "=" = languageMinorMode // {
+        "=" = languageMinorModeExpansion;
+      };
+      "tab" = bufferMinorMode // {
+        "tab" = bufferMinorModeExpansion;
+      };
+      "q" = longWordMinorMode;
+      "w" = wordMinorMode;
+      "e" = subWordMinorMode;
+      "r" = replaceMinorMode;
+      "t" = treeMinorMode;
+      "u" = undoMinorMode;
+      "o" = insertMinorMode;
+      "p" = pasteMinorMode;
+      "[" = prevImpairMinorMode // {
+        "[" = prevImpairMinorModeExpansion;
+      };
+      "s" = selectionMinorMode // {
+        "s" = selectionMinorModeExpansion;
+      };
+      "d" = deleteMinorMode;
+      "f" = findMinorMode;
+      "g" = gotoMinorMode // {
+        "g" = gotoMinorModeExpansion;
+      };
+      "ç" = insertMinorMode;
+      "]" = nextImpairMinorMode // {
+        "]" = nextImpairMinorModeExpansion;
+      };
+      "z" = viewMinorMode;
+      "c" = cursorMinorMode // {
+        "c" = cursorMinorModeExpansion;
+      };
+      "b" = windowMinorMode;
+      "n" = jumpMinorMode;
+      "m" = macroMinorMode;
+      "/" = searchMinorMode;
+      "°" = caseMinorMode;
+      "space" = spaceMinorMode // {
+        ":" = spaceMinorModeCommand;
+        "space" = spaceMinorModeExpansion;
+      };
+      "end" = configMinorMode;
+    }
+    |> setRepeatableMinorModes [
+      "q"
+      "w"
+      "e"
+      "t"
+      "u"
+      "p"
+      "z"
+      "n"
+    ];
   insert = {
     "esc" = "normal_mode";
     "tab" = "smart_tab";
