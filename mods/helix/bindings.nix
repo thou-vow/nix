@@ -76,27 +76,55 @@ let
   };
   bufferMinorModeExpansion = {
     "q" = ":buffer-close!";
-    "o" = ":buffer-close-others!";
     "w" = ":write!";
+    "o" = ":buffer-close-others!";
   };
+  bufferMinorModeRepeatable = [
+    "q"
+    "w"
+    "["
+    "]"
+  ];
+  bufferMinorModeExpansionRepeatable = [
+    "q"
+    "w"
+  ];
   longWordMinorMode = {
     "[" = "move_prev_long_word_start";
     "{" = "move_prev_long_word_end";
     "]" = "move_next_long_word_end";
     "}" = "move_next_long_word_start";
   };
+  longWordMinorModeRepeatable = [
+    "["
+    "{"
+    "]"
+    "}"
+  ];
   wordMinorMode = {
     "[" = "move_prev_word_start";
     "{" = "move_prev_word_end";
     "]" = "move_next_word_end";
     "}" = "move_next_word_start";
   };
+  wordMinorModeRepeatable = [
+    "["
+    "{"
+    "]"
+    "}"
+  ];
   subWordMinorMode = {
     "[" = "move_prev_sub_word_start";
     "{" = "move_prev_sub_word_end";
     "]" = "move_next_sub_word_end";
     "}" = "move_next_sub_word_start";
   };
+  subWordMinorModeRepeatable = [
+    "["
+    "{"
+    "]"
+    "}"
+  ];
   replaceMinorMode = {
     "q" = "@s}<S-w>rr";
     "w" = "@s}wrr";
@@ -121,12 +149,34 @@ let
     ];
     "c" = "replace";
   };
+  treeMinorMode = {
+    "[" = "select_prev_sibling";
+    "]" = "select_next_sibling";
+    "{" = "expand_selection";
+    "}" = "shrink_selection";
+    "h" = "move_parent_node_start";
+    "l" = "move_parent_node_end";
+  };
+  treeMinorModeRepeatable = [
+    "["
+    "]"
+    "{"
+    "}"
+    "h"
+    "l"
+  ];
   undoMinorMode = {
     "[" = "undo";
     "{" = "earlier";
     "]" = "redo";
     "}" = "later";
   };
+  undoMinorModeRepeatable = [
+    "["
+    "{"
+    "]"
+    "}"
+  ];
   insertMinorMode = {
     "[" = "insert_mode";
     "{" = "open_above";
@@ -140,7 +190,6 @@ let
   };
   pasteMinorMode = {
     "[" = "paste_before";
-    "]" = "paste_after";
     "h" = [
       "goto_first_nonwhitespace"
       "paste_before"
@@ -149,7 +198,14 @@ let
       "goto_line_end"
       "paste_after"
     ];
+    "]" = "paste_after";
   };
+  pasteMinorModeRepeatable = [
+    "["
+    "h"
+    "l"
+    "]"
+  ];
   prevImpairMinorMode = {
     "tab" = "goto_prev_tabstop";
     "e" = "goto_prev_entry";
@@ -165,14 +221,6 @@ let
   prevImpairMinorModeExpansion = {
     "d" = "goto_first_diag";
     "g" = "goto_first_change";
-  };
-  treeMinorMode = {
-    "[" = "select_prev_sibling";
-    "]" = "select_next_sibling";
-    "{" = "expand_selection";
-    "}" = "shrink_selection";
-    "h" = "move_parent_node_start";
-    "l" = "move_parent_node_end";
   };
   selectionMinorMode = {
     "q" = "@s}<S-w>";
@@ -219,12 +267,12 @@ let
     "s" = "match_brackets";
     "d" = "goto_definition";
     "h" = "goto_first_nonwhitespace";
-    "j" = "goto_window_bottom";
-    "k" = "goto_window_top";
     "l" = "goto_line_end";
     "x" = "goto_window_center";
     "." = "goto_last_modification";
     "ret" = "goto_line";
+    "down" = "goto_window_bottom";
+    "up" = "goto_window_top";
   };
   gotoMinorModeExpansion = {
     "d" = "goto_declaration";
@@ -257,6 +305,10 @@ let
     "up" = "align_view_bottom";
     "down" = "align_view_top";
   };
+  viewMinorModeRepeatable = [
+    "j"
+    "k"
+  ];
   cursorMinorMode = {
     "(" = "rotate_selection_contents_backward";
     ")" = "rotate_selection_contents_forward";
@@ -295,11 +347,30 @@ let
     "S-l" = "swap_view_right";
     "x" = "hsplit";
   };
+  windowMinorModeRepeatable = [
+    "q"
+    "y"
+    "["
+    "]"
+    "h"
+    "S-h"
+    "j"
+    "S-j"
+    "k"
+    "S-k"
+    "l"
+    "S-l"
+    "x"
+  ];
   jumpMinorMode = {
     "w" = "save_selection";
     "[" = "jump_backward";
     "]" = "jump_forward";
   };
+  jumpMinorModeRepeatable = [
+    "["
+    "]"
+  ];
   macroMinorMode = {
     "w" = "record_macro";
     "m" = "replay_macro";
@@ -312,6 +383,10 @@ let
     "k" = "rsearch";
     "]" = "search_next";
   };
+  searchMinorModeRepeatable = [
+    "["
+    "]"
+  ];
   caseMinorMode = {
     "minus" = "switch_to_lowercase";
     "+" = "switch_to_uppercase";
@@ -357,50 +432,46 @@ let
     "ret" = ":open ~/nix/";
   };
 
-  # Never pass ">" and similar keys to repeatableMinorModes
-  # Never pass keys that already have minor mode expansions
   setRepeatableMinorModes =
-    repeatableMinorModes: keys:
-    keys
-    |> builtins.attrValues
-    |> lib.zipListsWith (name: value: {
-      inherit name value;
-    }) (builtins.attrNames keys)
-    |> map (
-      minorMode:
-      if
-        builtins.any (repeatableMinorMode: minorMode.name == repeatableMinorMode) repeatableMinorModes
-      then
-        {
-          name = minorMode.name;
-          value = minorMode.value // {
-            "${minorMode.name}" =
-              (
-                minorMode.value
-                |> builtins.attrNames
-                |> map (name: {
-                  inherit name;
-                  value = "@<${minorMode.name}><${name}><${minorMode.name}><${minorMode.name}>";
-                })
-                |> lib.listToAttrs
-              )
-              // {
-                "${minorMode.name}" = "@<${minorMode.name}>";
-              };
-          };
-        }
-      else
-        {
-          name = minorMode.name;
-          value = minorMode.value;
-        }
+    let
+      buildRepeatableBindings =
+        repeatableMinorModeKey: minorModeKey: subsequentMinorModeKeyStack: bindings:
+        bindings
+        |> builtins.attrValues
+        |> lib.zipListsWith (name: value: {
+          inherit name value;
+        }) (builtins.attrNames bindings)
+        |> map (
+          { name, value }:
+          if builtins.isAttrs value then
+            {
+              inherit name;
+              value =
+                buildRepeatableBindings repeatableMinorModeKey minorModeKey
+                  "${subsequentMinorModeKeyStack}<${name}>"
+                  value;
+            }
+          else
+            {
+              inherit name;
+              value = "@<${minorModeKey}>${subsequentMinorModeKeyStack}<${name}><${repeatableMinorModeKey}>${subsequentMinorModeKeyStack}";
+            }
+        )
+        |> lib.listToAttrs;
+    in
+    repeatableMinorModes: baseBindings:
+    repeatableMinorModes
+    |> lib.mapAttrs (
+      repeatableMinorModeKey:
+      { minorModeKey, setRepeatable }:
+      buildRepeatableBindings repeatableMinorModeKey minorModeKey "" setRepeatable
     )
-    |> lib.listToAttrs;
+    |> lib.recursiveUpdate baseBindings;
 
-  convertStringNormalToSelect =
+  convertMovementToSelect =
     string:
     let
-      mapping = {
+      commandMap = {
         "move_char_left" = "extend_char_left";
         "move_visual_line_down" = "extend_visual_line_down";
         "move_visual_line_up" = "extend_visual_line_up";
@@ -434,21 +505,16 @@ let
         "search_prev" = "extend_search_prev";
       };
     in
-    if builtins.hasAttr string mapping then builtins.getAttr string mapping else string;
+    commandMap.${string} or string;
 
-  convertAttrsNormalToSelect =
+  convertBindingsToSelect =
     value:
     if builtins.isString value then
-      convertStringNormalToSelect value
+      convertMovementToSelect value
     else if builtins.isList value then
-      map convertStringNormalToSelect value
+      map convertMovementToSelect value
     else if builtins.isAttrs value then
-      (builtins.attrValues value)
-      |> lib.zipListsWith (attrName: attrValue: {
-        name = attrName;
-        value = convertAttrsNormalToSelect attrValue;
-      }) (builtins.attrNames value)
-      |> builtins.listToAttrs
+      lib.mapAttrs (_: convertBindingsToSelect) value
     else
       value;
 
@@ -499,16 +565,66 @@ let
       };
       "end" = configMinorMode;
     }
-    |> setRepeatableMinorModes [
-      "q"
-      "w"
-      "e"
-      "t"
-      "u"
-      "p"
-      "z"
-      "n"
-    ];
+    |> setRepeatableMinorModes (
+      let
+        listToNullAttrs =
+          list:
+          list
+          |> map (string: {
+            name = string;
+            value = null;
+          })
+          |> lib.listToAttrs;
+      in
+      {
+        "S-tab" = {
+          minorModeKey = "tab";
+          setRepeatable = (listToNullAttrs bufferMinorModeRepeatable) // {
+            "tab" = bufferMinorModeExpansionRepeatable;
+          };
+        };
+        "S-q" = {
+          minorModeKey = "q";
+          setRepeatable = listToNullAttrs longWordMinorModeRepeatable;
+        };
+        "S-w" = {
+          minorModeKey = "w";
+          setRepeatable = listToNullAttrs wordMinorModeRepeatable;
+        };
+        "S-e" = {
+          minorModeKey = "e";
+          setRepeatable = listToNullAttrs subWordMinorModeRepeatable;
+        };
+        "S-t" = {
+          minorModeKey = "t";
+          setRepeatable = listToNullAttrs treeMinorModeRepeatable;
+        };
+        "S-u" = {
+          minorModeKey = "u";
+          setRepeatable = listToNullAttrs undoMinorModeRepeatable;
+        };
+        "S-p" = {
+          minorModeKey = "p";
+          setRepeatable = listToNullAttrs pasteMinorModeRepeatable;
+        };
+        "S-z" = {
+          minorModeKey = "z";
+          setRepeatable = listToNullAttrs viewMinorModeRepeatable;
+        };
+        "S-b" = {
+          minorModeKey = "b";
+          setRepeatable = listToNullAttrs windowMinorModeRepeatable;
+        };
+        "S-n" = {
+          minorModeKey = "n";
+          setRepeatable = listToNullAttrs jumpMinorModeRepeatable;
+        };
+        "?" = {
+          minorModeKey = "/";
+          setRepeatable = listToNullAttrs searchMinorModeRepeatable;
+        };
+      }
+    );
   insert = {
     "esc" = "normal_mode";
     "tab" = "smart_tab";
@@ -538,15 +654,15 @@ let
     "down" = "scroll_down";
     "up" = "scroll_up";
   };
-  select = convertAttrsNormalToSelect normal // {
+  select = convertBindingsToSelect normal // {
     "v" = "exit_select_mode";
   };
 
-  cleared_default_keys = import ../../assets/helix/cleared_default_keys.nix;
+  cleared-default-bindings = import ../../assets/helix/cleared-default-bindings.nix;
 in
 {
   config = lib.mkIf config.mods.helix.enable {
-    programs.helix.settings.keys = lib.recursiveUpdate cleared_default_keys {
+    programs.helix.settings.keys = lib.recursiveUpdate cleared-default-bindings {
       inherit normal insert select;
     };
   };

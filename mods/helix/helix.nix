@@ -3,10 +3,11 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
+    ./bindings.nix
     ./editor.nix
-    ./keys.nix
     ./languages.nix
   ];
 
@@ -19,10 +20,12 @@
       settings.theme = "rose_pine";
     };
 
-    xdg.configFile = let
-      themesPath = "${config.home.homeDirectory}/nix/mods/helix/themes";
-    in {
-      "helix/themes".source = config.lib.file.mkOutOfStoreSymlink themesPath;
-    };
+    xdg.configFile =
+      let
+        themesPath = "${config.home.homeDirectory}/nix/mods/helix/themes";
+      in
+      {
+        "helix/themes".source = config.lib.file.mkOutOfStoreSymlink themesPath;
+      };
   };
 }
