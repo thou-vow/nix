@@ -24,6 +24,7 @@
         cursor-line = "disable";
         other-lines = "disable";
       };
+
       statusline = {
         left = [
           "mode"
@@ -54,14 +55,18 @@
         mode.insert = "INS";
         mode.select = "SEL";
       };
+
       lsp = {
         enable = true;
         auto-signature-help = false;
         display-messages = true;
         display-inlay-hints = true;
       };
+
       file-picker.hidden = false;
+
       search.smart-case = false;
+
       whitespace = {
         render = {
           space = "none";

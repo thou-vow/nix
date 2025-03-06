@@ -30,11 +30,13 @@
       hostname
       kbd # For showkey -a command
       man
+      manix
       nano
       openssh
       oscclip
       procps
       psmisc
+      sops
       unzip
       vim
       wget

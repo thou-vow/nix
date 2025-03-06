@@ -71,6 +71,7 @@ let
     "s" = "goto_file";
     "]" = "goto_next_buffer";
     "z" = "suspend";
+    "n" = ":new";
     "." = "goto_last_modified_file";
     "space" = "buffer_picker";
   };
@@ -84,10 +85,6 @@ let
     "w"
     "["
     "]"
-  ];
-  bufferMinorModeExpansionRepeatable = [
-    "q"
-    "w"
   ];
   longWordMinorMode = {
     "[" = "move_prev_long_word_start";
@@ -229,13 +226,14 @@ let
     "}" = "select_textobject_inner";
     "x" = "extend_to_line_bounds";
     "h" = "extend_to_first_nonwhitespace";
+    "j" = "join_selections";
     "l" = "extend_to_line_end";
     "\\" = "ensure_selections_forward";
-    "down" = "join_selections";
   };
   selectionMinorModeExpansion = {
+    "h" = "extend_to_line_start";
+    "l" = "extend_to_line_end_newline";
     "x" = "shrink_to_line_bounds";
-    "down" = "join_selections_space";
   };
   deleteMinorMode = {
     "q" = "@s}<S-w>dd";
@@ -267,6 +265,8 @@ let
     "s" = "match_brackets";
     "d" = "goto_definition";
     "h" = "goto_first_nonwhitespace";
+    "j" = "move_line_down";
+    "k" = "move_line_up";
     "l" = "goto_line_end";
     "x" = "goto_window_center";
     "." = "goto_last_modification";
@@ -316,20 +316,27 @@ let
     "{" = "select_all_siblings";
     "f" = "keep_selections";
     "d" = "remove_primary_selection";
+    "j" = "join_selections_space";
     "}" = "select_all_children";
     "\\" = "reverse_selection_contents";
     "|" = "align_selections";
     "x" = "split_selection_on_newline";
-    "," = "merge_selections";
+    "m" = "merge_selections";
     "space" = "split_selection";
     "ret" = "select_regex";
     "down" = "copy_selection_on_next_line";
     "up" = "copy_selection_on_prev_line";
   };
   cursorMinorModeExpansion = {
-    "," = "merge_consecutive_selections";
     "f" = "remove_selections";
+    "m" = "merge_consecutive_selections";
   };
+  cursorMinorModeRepeatable = [
+    "("
+    ")"
+    "down"
+    "up"
+  ];
   windowMinorMode = {
     "q" = "wclose";
     "t" = "transpose_view";
@@ -397,7 +404,7 @@ let
     "tab" = "file_picker_in_current_buffer_directory";
     "q" = ":quit";
     "w" = ":write-all";
-    "e" = "jumplist_picker";
+    "n" = "jumplist_picker";
     "s" = "symbol_picker";
     "d" = "diagnostics_picker";
     "g" = "changed_file_picker";
@@ -435,28 +442,13 @@ let
   setRepeatableMinorModes =
     let
       buildRepeatableBindings =
-        repeatableMinorModeKey: minorModeKey: subsequentMinorModeKeyStack: bindings:
+        repeatableMinorModeKey: minorModeKey: bindings:
         bindings
-        |> builtins.attrValues
-        |> lib.zipListsWith (name: value: {
-          inherit name value;
-        }) (builtins.attrNames bindings)
-        |> map (
-          { name, value }:
-          if builtins.isAttrs value then
-            {
-              inherit name;
-              value =
-                buildRepeatableBindings repeatableMinorModeKey minorModeKey
-                  "${subsequentMinorModeKeyStack}<${name}>"
-                  value;
-            }
-          else
-            {
-              inherit name;
-              value = "@<${minorModeKey}>${subsequentMinorModeKeyStack}<${name}><${repeatableMinorModeKey}>${subsequentMinorModeKeyStack}";
-            }
-        )
+        |> builtins.attrNames
+        |> map (name: {
+          inherit name;
+          value = "@<${minorModeKey}><${name}><${repeatableMinorModeKey}>";
+        })
         |> lib.listToAttrs;
     in
     repeatableMinorModes: baseBindings:
@@ -464,7 +456,7 @@ let
     |> lib.mapAttrs (
       repeatableMinorModeKey:
       { minorModeKey, setRepeatable }:
-      buildRepeatableBindings repeatableMinorModeKey minorModeKey "" setRepeatable
+      buildRepeatableBindings repeatableMinorModeKey minorModeKey setRepeatable
     )
     |> lib.recursiveUpdate baseBindings;
 
@@ -579,9 +571,7 @@ let
       {
         "S-tab" = {
           minorModeKey = "tab";
-          setRepeatable = (listToNullAttrs bufferMinorModeRepeatable) // {
-            "tab" = bufferMinorModeExpansionRepeatable;
-          };
+          setRepeatable = listToNullAttrs bufferMinorModeRepeatable;
         };
         "S-q" = {
           minorModeKey = "q";
@@ -610,6 +600,10 @@ let
         "S-z" = {
           minorModeKey = "z";
           setRepeatable = listToNullAttrs viewMinorModeRepeatable;
+        };
+        "S-c" = {
+          minorModeKey = "c";
+          setRepeatable = listToNullAttrs cursorMinorModeRepeatable;
         };
         "S-b" = {
           minorModeKey = "b";
@@ -658,7 +652,7 @@ let
     "v" = "exit_select_mode";
   };
 
-  cleared-default-bindings = import ../../assets/helix/cleared-default-bindings.nix;
+  cleared-default-bindings = import "${config.home.homeDirectory}/nix/assets/helix/cleared-default-bindings.nix";
 in
 {
   config = lib.mkIf config.mods.helix.enable {

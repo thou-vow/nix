@@ -4,6 +4,7 @@
   pkgs,
   ...
 }:
+
 {
   options.mods.rust.enable = lib.mkEnableOption "enable rust";
 

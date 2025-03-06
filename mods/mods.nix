@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ ... }:
 
 {
   imports = [
@@ -11,6 +11,4 @@
     ./typst.nix
     ./yazi/yazi.nix
   ];
-
-  options.mods.nix.enable = lib.mkEnableOption "enable nix";
 }

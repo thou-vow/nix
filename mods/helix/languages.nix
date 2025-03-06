@@ -22,16 +22,14 @@
               indent = commonIndent;
             }
             {
-              name = "toml";
-              indent = commonIndent;
-            }
-          ]
-          ++ lib.optionals config.mods.nix.enable [
-            {
               name = "nix";
               indent = commonIndent;
               auto-format = true;
               language-servers = [ "nixd" ];
+            }
+            {
+              name = "toml";
+              indent = commonIndent;
             }
           ]
           ++ lib.optionals config.mods.rust.enable [
@@ -73,7 +71,7 @@
               };
             };
           };
-          nixd = lib.mkIf config.mods.nix.enable {
+          nixd = {
             command = "${lib.getExe pkgs.nixd}";
             args = [ "--inlay-hints=true" ];
             config.nixd = {
@@ -88,11 +86,11 @@
           rust-analyzer = lib.mkIf config.mods.rust.enable {
             command = "${lib.getExe pkgs.rust-analyzer}";
             config = {
-              lru.capacity = 128;
               cachePriming.enable = false;
-              diagnostics.experimental.enable = true;
-              checkOnSave.command = "clippy";
               cargo.allFeatures = true;
+              checkOnSave.command = "clippy";
+              diagnostics.experimental.enable = true;
+              lru.capacity = 128;
               numThreads = 2;
             };
           };

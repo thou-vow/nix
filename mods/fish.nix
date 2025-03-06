@@ -4,6 +4,7 @@
   pkgs,
   ...
 }:
+
 {
   options.mods.fish.enable = lib.mkEnableOption "enable fish";
 
@@ -23,7 +24,10 @@
       eza = {
         enable = true;
         enableFishIntegration = true;
-        extraOptions = [ "--icons" ];
+        extraOptions = [
+          "--group-directories-first"
+          "--icons"
+        ];
       };
 
       # Better find
@@ -33,6 +37,10 @@
       fish = {
         enable = true;
         plugins = with pkgs.fishPlugins; [
+          {
+            name = "async-prompt";
+            src = async-prompt.src;
+          }
           {
             # Auto add pairs
             name = "autopair";
@@ -69,7 +77,10 @@
           h = lib.mkIf config.mods.helix.enable "hx";
           helix = lib.mkIf config.mods.helix.enable "hx";
           t = lib.mkIf config.mods.tmux.enable "tmux";
-          yy = ''nix-on-droid switch --flake "path:$HOME/nix#default"'';
+          yy = "nix-on-droid switch --flake ~/nix#default";
+          yyy = "nix flake update && nix-on-droid switch --flake ~/nix#default";
+          YY = "nix-on-droid switch --flake ~/nix#default --show-trace --verbose";
+          YYY = "nix flake update && nix-on-droid switch --flake ~/nix#default --show-trace --verbose";
 
           ## Docs
           "w.home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";

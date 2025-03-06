@@ -29,8 +29,11 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    # Secrets management
-    sops-nix.url = "github:Mic92/sops-nix";
+    # Secrets
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      # inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

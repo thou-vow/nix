@@ -1,13 +1,19 @@
-{ pkgs, ... }:
 {
-  imports = [ ../../mods/mods.nix ];
+  pkgs,
+  ...
+}:
+
+{
+  imports = [
+    ./secrets.nix
+    ../../mods/mods.nix
+  ];
 
   mods = {
     dash.enable = true;
     fish.enable = true;
     helix.enable = true;
     java.enable = true;
-    nix.enable = true;
     rust.enable = true;
     tmux.enable = true;
     typst.enable = true;
@@ -30,11 +36,5 @@
     stateVersion = "24.05";
   };
 
-  programs = {
-    git = {
-      userName = "thou-vow";
-      userEmail = "thou.vow.etoile@gmail.com";
-    };
-    home-manager.enable = true;
-  };
+  programs.home-manager.enable = true;
 }
