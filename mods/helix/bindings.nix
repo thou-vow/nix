@@ -3,6 +3,7 @@
   lib,
   ...
 }:
+
 let
   normalMode = {
     "'" = "repeat_last_motion";
@@ -66,6 +67,7 @@ let
     "'" = "goto_last_accessed_file";
     "q" = ":buffer-close";
     "w" = ":write";
+    "r" = ":reload";
     "o" = ":buffer-close-others";
     "[" = "goto_previous_buffer";
     "s" = "goto_file";
@@ -80,7 +82,7 @@ let
     "w" = ":write!";
     "o" = ":buffer-close-others!";
   };
-  bufferMinorModeRepeatable = [
+  bufferMinorModeSticky = [
     "q"
     "w"
     "["
@@ -92,7 +94,7 @@ let
     "]" = "move_next_long_word_end";
     "}" = "move_next_long_word_start";
   };
-  longWordMinorModeRepeatable = [
+  longWordMinorModeSticky = [
     "["
     "{"
     "]"
@@ -104,7 +106,7 @@ let
     "]" = "move_next_word_end";
     "}" = "move_next_word_start";
   };
-  wordMinorModeRepeatable = [
+  wordMinorModeSticky = [
     "["
     "{"
     "]"
@@ -116,7 +118,7 @@ let
     "]" = "move_next_sub_word_end";
     "}" = "move_next_sub_word_start";
   };
-  subWordMinorModeRepeatable = [
+  subWordMinorModeSticky = [
     "["
     "{"
     "]"
@@ -154,7 +156,7 @@ let
     "h" = "move_parent_node_start";
     "l" = "move_parent_node_end";
   };
-  treeMinorModeRepeatable = [
+  treeMinorModeSticky = [
     "["
     "]"
     "{"
@@ -168,7 +170,7 @@ let
     "]" = "redo";
     "}" = "later";
   };
-  undoMinorModeRepeatable = [
+  undoMinorModeSticky = [
     "["
     "{"
     "]"
@@ -197,7 +199,7 @@ let
     ];
     "]" = "paste_after";
   };
-  pasteMinorModeRepeatable = [
+  pasteMinorModeSticky = [
     "["
     "h"
     "l"
@@ -225,9 +227,16 @@ let
     "{" = "select_textobject_around";
     "}" = "select_textobject_inner";
     "x" = "extend_to_line_bounds";
-    "h" = "extend_to_first_nonwhitespace";
+    "h" = [
+      "ensure_selections_forward"
+      "flip_selections"
+      "extend_to_first_nonwhitespace"
+    ];
     "j" = "join_selections";
-    "l" = "extend_to_line_end";
+    "l" = [
+      "ensure_selections_forward"
+      "extend_to_line_end"
+    ];
     "\\" = "ensure_selections_forward";
   };
   selectionMinorModeExpansion = {
@@ -305,7 +314,7 @@ let
     "up" = "align_view_bottom";
     "down" = "align_view_top";
   };
-  viewMinorModeRepeatable = [
+  viewMinorModeSticky = [
     "j"
     "k"
   ];
@@ -315,13 +324,13 @@ let
     "y" = "yank_joined";
     "{" = "select_all_siblings";
     "f" = "keep_selections";
-    "d" = "remove_primary_selection";
     "j" = "join_selections_space";
     "}" = "select_all_children";
     "\\" = "reverse_selection_contents";
     "|" = "align_selections";
     "x" = "split_selection_on_newline";
     "m" = "merge_selections";
+    "," = "remove_primary_selection";
     "space" = "split_selection";
     "ret" = "select_regex";
     "down" = "copy_selection_on_next_line";
@@ -331,7 +340,7 @@ let
     "f" = "remove_selections";
     "m" = "merge_consecutive_selections";
   };
-  cursorMinorModeRepeatable = [
+  cursorMinorModeSticky = [
     "("
     ")"
     "down"
@@ -354,7 +363,7 @@ let
     "S-l" = "swap_view_right";
     "x" = "hsplit";
   };
-  windowMinorModeRepeatable = [
+  windowMinorModeSticky = [
     "q"
     "y"
     "["
@@ -374,7 +383,7 @@ let
     "[" = "jump_backward";
     "]" = "jump_forward";
   };
-  jumpMinorModeRepeatable = [
+  jumpMinorModeSticky = [
     "["
     "]"
   ];
@@ -390,7 +399,7 @@ let
     "k" = "rsearch";
     "]" = "search_next";
   };
-  searchMinorModeRepeatable = [
+  searchMinorModeSticky = [
     "["
     "]"
   ];
@@ -404,6 +413,7 @@ let
     "tab" = "file_picker_in_current_buffer_directory";
     "q" = ":quit";
     "w" = ":write-all";
+    "r" = ":reload-all";
     "n" = "jumplist_picker";
     "s" = "symbol_picker";
     "d" = "diagnostics_picker";
@@ -439,24 +449,24 @@ let
     "ret" = ":open ~/nix/";
   };
 
-  setRepeatableMinorModes =
+  setStickyMinorModes =
     let
-      buildRepeatableBindings =
-        repeatableMinorModeKey: minorModeKey: bindings:
+      buildStickyBindings =
+        stickyMinorModeKey: minorModeKey: bindings:
         bindings
         |> builtins.attrNames
         |> map (name: {
           inherit name;
-          value = "@<${minorModeKey}><${name}><${repeatableMinorModeKey}>";
+          value = "@<${minorModeKey}><${name}><${stickyMinorModeKey}>";
         })
         |> lib.listToAttrs;
     in
-    repeatableMinorModes: baseBindings:
-    repeatableMinorModes
+    stickyMinorModes: baseBindings:
+    stickyMinorModes
     |> lib.mapAttrs (
-      repeatableMinorModeKey:
-      { minorModeKey, setRepeatable }:
-      buildRepeatableBindings repeatableMinorModeKey minorModeKey setRepeatable
+      stickyMinorModeKey:
+      { minorModeKey, setSticky }:
+      buildStickyBindings stickyMinorModeKey minorModeKey setSticky
     )
     |> lib.recursiveUpdate baseBindings;
 
@@ -557,7 +567,7 @@ let
       };
       "end" = configMinorMode;
     }
-    |> setRepeatableMinorModes (
+    |> setStickyMinorModes (
       let
         listToNullAttrs =
           list:
@@ -571,51 +581,51 @@ let
       {
         "S-tab" = {
           minorModeKey = "tab";
-          setRepeatable = listToNullAttrs bufferMinorModeRepeatable;
+          setSticky = listToNullAttrs bufferMinorModeSticky;
         };
         "S-q" = {
           minorModeKey = "q";
-          setRepeatable = listToNullAttrs longWordMinorModeRepeatable;
+          setSticky = listToNullAttrs longWordMinorModeSticky;
         };
         "S-w" = {
           minorModeKey = "w";
-          setRepeatable = listToNullAttrs wordMinorModeRepeatable;
+          setSticky = listToNullAttrs wordMinorModeSticky;
         };
         "S-e" = {
           minorModeKey = "e";
-          setRepeatable = listToNullAttrs subWordMinorModeRepeatable;
+          setSticky = listToNullAttrs subWordMinorModeSticky;
         };
         "S-t" = {
           minorModeKey = "t";
-          setRepeatable = listToNullAttrs treeMinorModeRepeatable;
+          setSticky = listToNullAttrs treeMinorModeSticky;
         };
         "S-u" = {
           minorModeKey = "u";
-          setRepeatable = listToNullAttrs undoMinorModeRepeatable;
+          setSticky = listToNullAttrs undoMinorModeSticky;
         };
         "S-p" = {
           minorModeKey = "p";
-          setRepeatable = listToNullAttrs pasteMinorModeRepeatable;
+          setSticky = listToNullAttrs pasteMinorModeSticky;
         };
         "S-z" = {
           minorModeKey = "z";
-          setRepeatable = listToNullAttrs viewMinorModeRepeatable;
+          setSticky = listToNullAttrs viewMinorModeSticky;
         };
         "S-c" = {
           minorModeKey = "c";
-          setRepeatable = listToNullAttrs cursorMinorModeRepeatable;
+          setSticky = listToNullAttrs cursorMinorModeSticky;
         };
         "S-b" = {
           minorModeKey = "b";
-          setRepeatable = listToNullAttrs windowMinorModeRepeatable;
+          setSticky = listToNullAttrs windowMinorModeSticky;
         };
         "S-n" = {
           minorModeKey = "n";
-          setRepeatable = listToNullAttrs jumpMinorModeRepeatable;
+          setSticky = listToNullAttrs jumpMinorModeSticky;
         };
         "?" = {
           minorModeKey = "/";
-          setRepeatable = listToNullAttrs searchMinorModeRepeatable;
+          setSticky = listToNullAttrs searchMinorModeSticky;
         };
       }
     );

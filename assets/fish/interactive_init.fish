@@ -1,3 +1,7 @@
+function color
+    perl -e 'foreach $a(@ARGV){print "\e[48:2::".join(":",unpack("C*",pack("H*",$a)))."m   \e[49m "};print "\n"' $argv
+end
+
 abbr --add -- .. 'cd ..'
 abbr --add -- ../.. 'cd ../..'
 abbr --add -- ../../.. 'cd ../../..'

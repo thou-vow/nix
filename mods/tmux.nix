@@ -17,7 +17,7 @@
       package = pkgs.tmux;
 
       extraConfig = ''
-        run-shell "${config.home.homeDirectory}/nix/assets/tmux/startup.sh"
+        run "${config.home.homeDirectory}/nix/assets/tmux/startup.sh"
       '';
     };
   };

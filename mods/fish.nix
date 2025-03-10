@@ -11,6 +11,7 @@
   config = lib.mkIf config.mods.fish.enable {
     home.packages = with pkgs; [
       duf # Disk usage/free utility
+      perl
       pokeget-rs
       w3m # Web browser for CLI
       wiki-tui # Wikipedia
@@ -37,10 +38,6 @@
       fish = {
         enable = true;
         plugins = with pkgs.fishPlugins; [
-          {
-            name = "async-prompt";
-            src = async-prompt.src;
-          }
           {
             # Auto add pairs
             name = "autopair";

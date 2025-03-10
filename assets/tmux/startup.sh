@@ -1,14 +1,52 @@
 #!/usr/bin/env dash
 
-temp_file="/tmp/tmux_startup.conf"
+tmp_file="/tmp/tmux_startup.conf"
 
-transit_to_root="set -g key-table root; set -g status-left \"#[fg=white,bg=red,bold] ROOT #[fg=red,bg=default,nobold]\""
-transit_to_prefix="set -g key-table prefix; set -g status-left \"#[fg=white,bg=blue,bold]PREFIX#[fg=blue,bg=default,nobold]\""
-transit_to_persistent_prefix="set -g key-table persistent-prefix; set -g status-left \"#[fg=white,bg=blue,bold,italics]PREFIX#[fg=blue,bg=default,nobold,noitalics]\""
-transit_to_persistent_copy="copy-mode; set -g key-table persistent-copy; set -g status-left \"#[fg=white,bg=orange,bold,italics] COPY #[fg=orange,bg=default,nobold,noitalics]\""
+set_menu() {
+  local menu_title="$1"
+  shift
+  menu="menu -x R -y P -T '#[align=centre,bold fg=green]$menu_title'"
+
+  while [ $# -gt 0 ]; do
+    menu="$menu \
+  \"$1\" \"$2\" \"$3\" "
+    shift 3
+  done
+
+  menu="${menu% \\}"
+  echo "$menu"
+}
+
+prefix_mode=$(
+  set_menu "Prefix" \
+    "Quit pane" "q" "confirm -p 'Kill pane #P? (y/n)' killp" \
+    "Vertical right split" "y" "split-window -h" \
+    "Vertical left split" "Y" "split-window -hb" \
+    "Goto previous window" "[" "previous-window" \
+    "Swap previous window" "{" "swap-window -t '{previous}'; previous-window" \
+    "Goto left pane" "h" "select-pane -L" \
+    "Swap left pane" "H" "swap-pane -t '{left-of}'" \
+    "Goto down pane" "j" "select-pane -D" \
+    "Swap down pane" "J" "swap-pane -t '{down-of}'" \
+    "Goto up pane" "k" "select-pane -U" \
+    "Swap up pane" "K" "swap-pane -t '{up-of}'" \
+    "Goto right pane" "l" "select-pane -R" \
+    "Swap right pane" "L" "swap-pane -t '{right-of}'" \
+    "Goto next window" "]" "next-window" \
+    "Swap next window" "}" "swap-window -t '{next}'; next-window" \
+    "Horizontal down split" "x" "split-window -v" \
+    "Horizontal up split" "X" "split-window -vb" \
+    "New window" "n" "new-window" \
+    "Command prompt" ":" "command-prompt" \
+    "Resize pane left" "Left" "resize-pane -L 1" \
+    "Resize pane down" "Down" "resize-pane -D 1" \
+    "Resize pane up" "Up" "resize-pane -U 1" \
+    "Resize pane right" "Right" "resize-pane -R 1" \
+    "Reload config" "Enter" "run '$(realpath "$0")'"
+)
 
 # Create a new config file
-cat >"$temp_file" <<EOF
+cat >"$tmp_file" <<EOF
 # General Settings
 set -g base-index 1
 set -g pane-base-index 1
@@ -19,117 +57,32 @@ set -g focus-events off
 set -g aggressive-resize off
 set -g clock-mode-style 24
 set -g escape-time 0
-set -g history-limit 5000
+set -g history-limit 50000
 set -g allow-passthrough on
 set -g alternate-screen on
 set -g renumber-windows on
 set -g set-clipboard on
+set -g display-time 500
+set -g menu-selected-style ""
+set -g message-style ""
+set -g window-status-format "#[fg=white,dim]#I ➢ #W "
+set -g window-status-current-format "#[fg=yellow,bold,nodim]#I ➢ #W#[nobold]"
+set -g status off
 set -g default-terminal "tmux-256color"
 
-# Status Bar
-set -g status-position top
-set -g status-justify centre
-set -g status-style "bg=#191724"
-set -g status-left-length 10
-set -g status-right "#[fg=white,bg=default,nobold]  #[fg=magenta,bg=default,bold]#S "
-set -g window-status-style "fg=white dim"
-set -g window-status-format " #I ➢ #W "
-set -g window-status-current-style "fg=yellow bold"
-set -g window-status-current-format " #I ➢ #W "
-
-$transit_to_root
-
-# Unbind keys
-set -g prefix None
+# Unbind defaults
 unbind -T root -a
 unbind -T prefix -a
+unbind -T copy-mode-vi -a
 
-# Switch mode bindings
-bind -T root C-Space { $transit_to_prefix }
-bind -T root C-b { $transit_to_persistent_copy }
-bind -T prefix Escape { $transit_to_root }
-bind -T prefix Space { $transit_to_persistent_prefix }
-bind -T persistent-prefix Escape { $transit_to_root }
-bind -T persistent-prefix Space { $transit_to_prefix }
-bind -T persistent-copy Escape { $transit_to_root }
+# Hooks
+set-hook -g window-unlinked "display-message '#{W:#{E:window-status-format} ,#{E:window-status-current-format} }'"
+
+# Mode switch
+bind -T root C-Space { $prefix_mode }
 EOF
 
-append_bindings() {
-  local table="$1"
-  shift
-  {
-    while [ $# -ge 2 ]; do
-      local key="$1" action="$2"
-      shift 2
-      echo "bind -T $table '$key' { $action; $transit_to_root }"
-    done
-  } >>"$temp_file"
-}
+# Load the configuration in a single call
+tmux source "$tmp_file"
+rm -f "$tmp_file"
 
-append_bindings_persistent() {
-  local table="$1"
-  shift
-  {
-    while [ $# -ge 2 ]; do
-      local key="$1" action="$2"
-      shift 2
-      echo "bind -r -T $table '$key' { $action }"
-    done
-  } >>"$temp_file"
-}
-
-append_bindings prefix \
-  "q" "kill-pane" \
-  "y" "split-window -h" \
-  "Y" "split-window -hb" \
-  "[" "previous-window" \
-  "{" "swap-window -t '{previous}'; previous-window" \
-  "h" "select-pane -L" \
-  "H" "swap-pane -t '{left-of}'" \
-  "j" "select-pane -D" \
-  "J" "swap-pane -t '{down-of}'" \
-  "k" "select-pane -U" \
-  "K" "swap-pane -t '{up-of}'" \
-  "l" "select-pane -R" \
-  "L" "swap-pane -t '{right-of}'" \
-  "]" "next-window" \
-  "}" "swap-window -t '{next}'; next-window" \
-  "x" "split-window -v" \
-  "X" "split-window -vb" \
-  "n" "new-window" \
-  "Left" "resize-pane -L 1" \
-  "Down" "resize-pane -D 1" \
-  "Up" "resize-pane -U 1" \
-  "Right" "resize-pane -R 1"
-
-append_bindings_persistent persistent-prefix \
-  "q" "kill-pane" \
-  "y" "split-window -h" \
-  "Y" "split-window -hb" \
-  "[" "previous-window" \
-  "{" "swap-window -t '{previous}'" \
-  "h" "select-pane -L" \
-  "H" "swap-pane -t '{left-of}'" \
-  "j" "select-pane -D" \
-  "J" "swap-pane -t '{down-of}'" \
-  "k" "select-pane -U" \
-  "K" "swap-pane -t '{up-of}'" \
-  "l" "select-pane -R" \
-  "L" "swap-pane -t '{right-of}'" \
-  "]" "next-window" \
-  "}" "swap-window -t '{next}'" \
-  "x" "split-window -v" \
-  "X" "split-window -vb" \
-  "n" "new-window" \
-  "Left" "resize-pane -L 1" \
-  "Down" "resize-pane -D 1" \
-  "Up" "resize-pane -U 1" \
-  "Right" "resize-pane -R 1"
-
-append_bindings_persistent persistent-copy \
-  "y" "send-keys -X copy-selection-and-cancel" \
-  "j" "send-keys -X cursor-down" \
-  "k" "send-keys -X cursor-up" \
-  "v" "send-keys -X begin-selection" \
-# Load the configuration with a single call
-tmux source "$temp_file"

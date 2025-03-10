@@ -17,15 +17,10 @@
     programs.helix = {
       enable = true;
       package = pkgs.helix;
-      settings.theme = "rose_pine";
     };
 
-    xdg.configFile =
-      let
-        themesPath = "${config.home.homeDirectory}/nix/mods/helix/themes";
-      in
-      {
-        "helix/themes".source = config.lib.file.mkOutOfStoreSymlink themesPath;
-      };
+    xdg.configFile."helix/themes".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/assets/helix/themes";
+
   };
 }
