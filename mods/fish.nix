@@ -59,6 +59,9 @@
         ];
 
         interactiveShellInit = ''
+          # Fix visual glitches
+          set -Ua fish_features no-keyboard-protocols
+
           # Avoid pure plugin error
           set --universal pure_enable_container_detection false
 
@@ -74,10 +77,6 @@
           h = lib.mkIf config.mods.helix.enable "hx";
           helix = lib.mkIf config.mods.helix.enable "hx";
           t = lib.mkIf config.mods.tmux.enable "tmux";
-          yy = "nix-on-droid switch --flake ~/nix#default";
-          yyy = "nix flake update && nix-on-droid switch --flake ~/nix#default";
-          YY = "nix-on-droid switch --flake ~/nix#default --show-trace --verbose";
-          YYY = "nix flake update && nix-on-droid switch --flake ~/nix#default --show-trace --verbose";
 
           ## Docs
           "w.home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";

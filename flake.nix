@@ -38,6 +38,7 @@
 
   outputs =
     {
+      home-manager,
       nixpkgs,
       nix-on-droid,
       ...
@@ -49,13 +50,21 @@
         config.allowUnfree = true;
       };
     in
-    # custom-pkgs = import ./custom-pkgs/custom-pkgs.nix {
-    #   inherit pkgs;
-    # };
     {
+      homeConfigurations = {
+        termux = home-manager.lib.homeConfiguration {
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+
+          inherit pkgs;
+
+          modules = [ ./hosts/termux/home.nix ];
+        };
+      };
+
       nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
         extraSpecialArgs = {
-          # inherit custom-pkgs;
           inherit inputs;
         };
 
@@ -63,5 +72,6 @@
 
         modules = [ ./hosts/nix-on-droid/nix-on-droid.nix ];
       };
+
     };
 }
