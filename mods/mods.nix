@@ -2,13 +2,12 @@
 
 {
   imports = [
-    ./dash.nix
     ./fish.nix
+    ./gh.nix
+    ./gitui.nix
     ./helix/helix.nix
-    ./java.nix
-    ./rust.nix
+    ./langs/langs.nix
     ./tmux.nix
-    ./typst.nix
     ./yazi/yazi.nix
   ];
 }

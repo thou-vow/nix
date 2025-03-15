@@ -48,6 +48,7 @@ prefix_mode=$(
 # Create a new config file
 cat >"$tmp_file" <<EOF
 # General Settings
+set -g default-terminal "tmux-256color"
 set -g base-index 1
 set -g pane-base-index 1
 set -g status-keys vi
@@ -63,12 +64,12 @@ set -g alternate-screen on
 set -g renumber-windows on
 set -g set-clipboard on
 set -g display-time 500
+set -g terminal-overrides ",xterm-256color:Tc"
 set -g menu-selected-style ""
 set -g message-style ""
 set -g window-status-format "#[fg=white,dim]#I ➢ #W "
 set -g window-status-current-format "#[fg=yellow,bold,nodim]#I ➢ #W#[nobold]"
 set -g status off
-set -g default-terminal "tmux-256color"
 
 # Unbind defaults
 unbind -T root -a
@@ -84,5 +85,4 @@ EOF
 
 # Load the configuration in a single call
 tmux source "$tmp_file"
-rm -f "$tmp_file"
 

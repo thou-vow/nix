@@ -5,7 +5,6 @@
     cores = 1;
     max-jobs = 1;
     max-substitution-jobs = 2;
-
     extra-substituters = [
       "https://nix-community.cachix.org"
       "https://devenv.cachix.org"
@@ -32,8 +31,11 @@
     # Secrets
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Theming
+    stylix.url = "github:danth/stylix";
   };
 
   outputs =
@@ -41,37 +43,31 @@
       home-manager,
       nixpkgs,
       nix-on-droid,
+      stylix,
       ...
     }@inputs:
-    let
-      pkgs = import nixpkgs {
-        system = builtins.currentSystem;
-
-        config.allowUnfree = true;
-      };
-    in
     {
-      homeConfigurations = {
-        termux = home-manager.lib.homeConfiguration {
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-
-          inherit pkgs;
-
-          modules = [ ./hosts/termux/home.nix ];
-        };
-      };
-
-      nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
+      nixOnDroidConfigurations.droid = nix-on-droid.lib.nixOnDroidConfiguration {
         extraSpecialArgs = {
           inherit inputs;
         };
 
-        inherit pkgs;
+        home-manager-path = home-manager.outPath;
 
-        modules = [ ./hosts/nix-on-droid/nix-on-droid.nix ];
+        pkgs = import nixpkgs {
+          system = "aarch64-linux";
+
+          overlays = [
+            nix-on-droid.overlays.default
+          ];
+
+          config.allowUnfree = true;
+        };
+
+        modules = [
+          ./hosts/droid/droid.nix
+          # stylix.nixOnDroidModules.stylix
+        ];
       };
-
     };
 }

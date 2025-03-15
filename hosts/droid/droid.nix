@@ -4,6 +4,7 @@
   pkgs,
   ...
 }:
+
 {
   android-integration = {
     am.enable = true;
@@ -18,9 +19,10 @@
   environment = {
     etcBackupExtension = "nix-bak";
     packages = with pkgs; [
+      coreutils
       diffutils
       findutils
-      coreutils
+      inetutils
       gawk
       git
       gnugrep
@@ -28,7 +30,7 @@
       gnutar
       gzip
       hostname
-      kbd # For showkey -a command
+      kbd
       man
       manix
       nano
@@ -55,12 +57,17 @@
   };
 
   nix = {
-    extraOptions = ''
-      experimental-features = nix-command flakes pipe-operators
-    '';
+    extraOptions = ''experimental-features = nix-command flakes pipe-operators '';
     nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
     package = pkgs.nixVersions.latest;
   };
+
+  # stylix = {
+  #   enable = true;
+  #   base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+  #   # Some image
+  #   image = ../../../storage/downloads/b65e01cf631c5a71dec76941b071e6ac.jpg;
+  # };
 
   system.stateVersion = "24.05";
 

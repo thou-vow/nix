@@ -73,18 +73,7 @@
         '';
 
         preferAbbrs = true;
-        shellAbbrs = {
-          h = lib.mkIf config.mods.helix.enable "hx";
-          helix = lib.mkIf config.mods.helix.enable "hx";
-          t = lib.mkIf config.mods.tmux.enable "tmux";
-
-          ## Docs
-          "w.home-manager" = "w3m https://nix-community.github.io/home-manager/options.xhtml";
-          "w.nix.dev" = "w3m https://nix.dev/manual/nix/latest/";
-          "w.nixos" = "w3m https://nixos.org/manual/nixos/unstable/";
-          "w.nixpkgs" = "w3m https://nixos.org/manual/nixpkgs/unstable/";
-          "w.nix-on-droid" = "w3m https://nix-community.github.io/nix-on-droid/nix-on-droid-options.html";
-        };
+        shellAbbrs = config.home.shellAliases;
       };
 
       ripgrep.enable = true;

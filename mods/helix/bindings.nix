@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 
 let
   normalMode = {
@@ -147,6 +143,7 @@ let
       "change_selection_noyank"
     ];
     "c" = "replace";
+    "b" = "@nws\\\\o[a<esc>hrpnwn[dyn]";
   };
   treeMinorMode = {
     "[" = "select_prev_sibling";
@@ -440,15 +437,11 @@ let
   configMinorMode = {
     "i" = ":toggle-option lsp.display-inlay-hints";
     "s" = ":toggle-option auto-pairs";
-    "d" = [
-      ":toggle-option inline-diagnostics.other-lines disable hint"
-      ":toggle-option inline-diagnostics.cursor-line disable hint"
-    ];
+    "d" = ":toggle-option inline-diagnostics.cursor-line disable hint";
     "x" = ":toggle-option soft-wrap.enable";
     "/" = ":toggle-option search.smart-case";
     "ret" = ":open ~/nix/";
   };
-
   setStickyMinorModes =
     let
       buildStickyBindings =
@@ -469,7 +462,6 @@ let
       buildStickyBindings stickyMinorModeKey minorModeKey setSticky
     )
     |> lib.recursiveUpdate baseBindings;
-
   convertMovementToSelect =
     string:
     let
@@ -508,7 +500,6 @@ let
       };
     in
     commandMap.${string} or string;
-
   convertBindingsToSelect =
     value:
     if builtins.isString value then
@@ -519,7 +510,6 @@ let
       lib.mapAttrs (_: convertBindingsToSelect) value
     else
       value;
-
   normal =
     normalMode
     // {
@@ -661,7 +651,6 @@ let
   select = convertBindingsToSelect normal // {
     "v" = "exit_select_mode";
   };
-
   cleared-default-bindings = import "${config.home.homeDirectory}/nix/assets/helix/cleared-default-bindings.nix";
 in
 {

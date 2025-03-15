@@ -18,12 +18,17 @@
       text-width = 120;
       color-modes = true;
       popup-border = "all";
+      rulers = [
+        64
+        128
+      ];
       scrolloff = 5;
       end-of-line-diagnostics = "hint";
       inline-diagnostics = {
         cursor-line = "disable";
         other-lines = "disable";
       };
+      jump-label-alphabet = "gwfqehsvacdbrjtkzy";
 
       statusline = {
         left = [

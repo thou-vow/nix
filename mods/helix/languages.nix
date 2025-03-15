@@ -5,6 +5,7 @@
   pkgs,
   ...
 }:
+
 {
   config = lib.mkIf config.mods.helix.enable {
     programs.helix = {
@@ -28,35 +29,51 @@
               language-servers = [ "nixd" ];
             }
             {
+              name = "ron";
+              indent = commonIndent;
+            }
+            {
               name = "toml";
               indent = commonIndent;
             }
           ]
-          ++ lib.optionals config.mods.rust.enable [
+          ++ lib.optionals config.mods.langs.c.enable [
+            {
+              name = "c";
+              indent = commonIndent;
+              auto-format = true;
+              file-types = [
+                "c"
+                "h"
+              ];
+              language-servers = [ "ccls" ];
+            }
+          ]
+          ++ lib.optionals config.mods.langs.dash.enable [
+            {
+              name = "bash";
+              indent = commonIndent;
+              language-servers = [ "bash-language-server" ];
+            }
+          ]
+          ++ lib.optionals config.mods.langs.rust.enable [
             {
               name = "rust";
               indent = commonIndent;
               language-servers = [ "rust-analyzer" ];
             }
           ]
-          ++ lib.optionals config.mods.typst.enable [
+          ++ lib.optionals config.mods.langs.typst.enable [
             {
               name = "typst";
               indent = commonIndent;
               formatter.command = "${lib.getExe pkgs.typst-fmt}";
               language-servers = [ "tinymist" ];
             }
-          ]
-          ++ lib.optionals config.mods.dash.enable [
-            {
-              name = "bash";
-              indent = commonIndent;
-              language-servers = [ "bash-language-server" ];
-            }
           ];
 
         language-server = {
-          bash-language-server = lib.mkIf config.mods.dash.enable {
+          bash-language-server = lib.mkIf config.mods.langs.dash.enable {
             command = "${lib.getExe pkgs.bash-language-server}";
             args = [ "start" ];
             config = {
@@ -71,6 +88,9 @@
               };
             };
           };
+          ccls = lib.mkIf config.mods.langs.c.enable {
+            command = "ccls";
+          };
           nixd = {
             command = "${lib.getExe pkgs.nixd}";
             args = [ "--inlay-hints=true" ];
@@ -83,7 +103,7 @@
                 "(builtins.getFlake \"${inputs.self}\").nixOnDroidConfigurations.default.options";
             };
           };
-          rust-analyzer = lib.mkIf config.mods.rust.enable {
+          rust-analyzer = lib.mkIf config.mods.langs.rust.enable {
             command = "${lib.getExe pkgs.rust-analyzer}";
             config = {
               cachePriming.enable = false;
@@ -94,7 +114,7 @@
               numThreads = 2;
             };
           };
-          tinymist = lib.mkIf config.mods.typst.enable {
+          tinymist = lib.mkIf config.mods.langs.typst.enable {
             command = "${lib.getExe pkgs.tinymist}";
             config = {
               exportPdf = "onSave";
